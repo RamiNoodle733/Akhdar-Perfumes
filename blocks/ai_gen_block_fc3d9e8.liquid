@@ -1,0 +1,560 @@
+{% doc %}
+  @prompt
+    Design a hero section for Akhdar Perfumes that fills the first screen with a serene, luxury aesthetic. Use a muted color palette and a full-width background video of swirling perfume oil and natural ingredients. Overlay a bold headline—‘Experience the the Essence of Tradition’—with a concise subheading highlighting our natural, Sunnah-inspired roll-on perfumes. Include two CTAs: a primary button (‘Shop Now’) and a secondary button (‘Our Story’) linking to the about page. Add subtle micro-animations: a gentle fade-in for the text, a hover effect on the buttons and a parallax scroll on the background. Ensure the section loads quickly, contains only essential elements, and reflects the brand’s elegance and modest.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hero-section-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.fallback_color }};
+  }
+
+  .ai-hero-video-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index:1;
+    transform: translateZ(0);
+  }
+
+  .ai-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      {{ block.settings.overlay_color_1 }} 0%,
+      {{ block.settings.overlay_color_2 }} 100%
+    );
+    opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    z-index: 2;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    max-width: {{ block.settings.content_width }}px;
+    padding: 0 20px;
+    color: {{ block.settings.text_color }};
+    opacity: 0;
+    transform: translateY(30px);
+    animation: ai-hero-fade-in-{{ ai_gen_id }} 1.2s ease-out 0.3s forwards;
+  }
+
+  .ai-hero-headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 {{ block.settings.text_spacing }}px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .ai-hero-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 0 0 {{ block.settings.button_spacing }}px 0;
+    opacity: 0.9;
+  }
+
+  .ai-hero-buttons-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.button_gap }}px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .ai-hero-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-weight: 600;
+    font-size: {{ block.settings.button_font_size }}px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    min-width: 140px;
+  }
+
+  .ai-hero-button-primary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.primary_button_bg }};
+    color: {{ block.settings.primary_button_color }};
+    border: 2px solid {{ block.settings.primary_button_bg }};
+  }
+
+  .ai-hero-button-primary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.primary_button_hover_bg }};
+    color: {{ block.settings.primary_button_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-hero-button-secondary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.secondary_button_bg }};
+    color: {{ block.settings.secondary_button_color }};
+    border: 2px solid {{ block.settings.secondary_button_border }};
+  }
+
+  .ai-hero-button-secondary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.secondary_button_hover_bg }};
+    color: {{ block.settings.secondary_button_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  @keyframes ai-hero-fade-in-{{ ai_gen_id }} {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ai-hero-section-{{ ai_gen_id }} {
+      height: 80vh;
+      min-height: 500px;
+    }
+
+    .ai-hero-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.7 }}px;
+    }
+
+    .ai-hero-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.9 }}px;
+    }
+
+    .ai-hero-buttons-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ai-hero-button-{{ ai_gen_id }} {
+      width: 100%;
+      max-width: 280px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ai-hero-content-{{ ai_gen_id }} {
+      padding: 0 15px;
+    }
+
+    .ai-hero-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.6 }}px;
+    }
+  }
+{% endstyle %}
+
+<hero-section-{{ ai_gen_id }} class="ai-hero-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.background_video %}
+    <video
+      class="ai-hero-video-{{ ai_gen_id }}"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    >
+      <source src="{{ block.settings.background_video }}" type="video/mp4">
+    </video>
+  {% else %}
+    {% if block.settings.background_image %}
+      <div
+        class="ai-hero-video-{{ ai_gen_id }}"
+        style="background-image: url('{{ block.settings.background_image | image_url: width: 2000 }}'); background-size: cover; background-position: center;"></div>
+    {% else %}
+      <div class="ai-hero-video-placeholder-{{ ai_gen_id }}">
+        {{ 'hero-apparel-1' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="ai-hero-overlay-{{ ai_gen_id }}"></div>
+
+  <div class="ai-hero-content-{{ ai_gen_id }}">
+    {% if block.settings.headline != blank %}
+      <h1 class="ai-hero-headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h1>
+    {% endif %}
+
+    {% if block.settings.subheading_text != blank %}
+      <p class="ai-hero-subheading-{{ ai_gen_id }}">{{ block.settings.subheading_text }}</p>
+    {% endif %}
+
+    <div class="ai-hero-buttons-{{ ai_gen_id }}">
+      {% if block.settings.primary_button_label != blank %}
+        <a
+          href="{{ block.settings.primary_button_link | default: routes.all_products_collection_url }}"
+          class="ai-hero-button-{{ ai_gen_id }} ai-hero-button-primary-{{ ai_gen_id }}"
+        >
+          {{ block.settings.primary_button_label }}
+        </a>
+      {% endif %}
+
+      {% if block.settings.secondary_button_label != blank %}
+        <a
+          href="{{ block.settings.secondary_button_link | default: 'https://akhdarperfumes.com/pages/about-us' }}"
+          class="ai-hero-button-{{ ai_gen_id }} ai-hero-button-secondary-{{ ai_gen_id }}"
+        >
+          {{ block.settings.secondary_button_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</hero-section-{{ ai_gen_id }}><script>
+  (function() {
+    class HeroSection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.video = null;
+        this.content = null;
+        this.parallaxEnabled = false;
+      }
+
+      connectedCallback() {
+        this.video = this.querySelector('.ai-hero-video-{{ ai_gen_id }}');
+        this.content = this.querySelector('.ai-hero-content-{{ ai_gen_id }}');
+        
+        if (this.video && this.video.tagName === 'VIDEO') {
+          this.setupVideo();
+        }
+        
+        this.setupParallax();
+      }
+
+      setupVideo() {
+        this.video.addEventListener('loadeddata', () => {
+          this.video.play().catch(() => {
+            console.log('Video autoplay failed');
+          });
+        });
+
+        this.video.addEventListener('error', () => {
+          this.video.style.display = 'none';
+        });
+      }
+
+      setupParallax() {
+        const handleScroll = () => {
+          if (!this.parallaxEnabled) return;
+          
+          const scrolled = window.pageYOffset;
+          const rect = this.getBoundingClientRect();
+          if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+            const speed = 0.5;
+            if (this.video) {
+              this.video.style.transform = `translateY(${scrolled * speed}px)`;
+            }
+            if (this.content) {
+              this.content.style.transform = `translateY(${scrolled * 0.2}px)`;
+            }
+          }
+        };
+
+        const enableParallax = () => {
+          this.parallaxEnabled = window.innerWidth > 768;
+        };
+
+        enableParallax();
+        window.addEventListener('resize', enableParallax);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+      }
+    }
+
+    customElements.define('hero-section-{{ ai_gen_id }}', HeroSection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Akhdar Hero Section",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "url",
+      "id": "background_video",
+      "label": "Background video URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Fallback background image"
+    },
+    {
+      "type": "color",
+      "id": "fallback_color",
+      "label": "Fallback background color",
+      "default": "#f5f5f0"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color_1",
+      "label": "Overlay gradient start",
+      "default": "#2c3e2d"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color_2",
+      "label": "Overlay gradient end",
+      "default": "#1a2e1d"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Experience the Essence of Tradition"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading_text",
+      "label": "Subheading",
+      "default": "Discover our natural, Sunnah-inspired roll-on perfumes crafted with the finest ingredients for a pure and elegant fragrance experience."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 400,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "label": "Content width",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Headline size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Text spacing",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Primary Button"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Primary button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_bg",
+      "label": "Background color",
+      "default": "#82b486"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_hover_bg",
+      "label": "Hover background color",
+      "default": "#6b9a6f"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_hover_color",
+      "label": "Hover text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Secondary Button"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Secondary button text",
+      "default": "Our Story"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_bg",
+      "label": "Background color",
+      "default": "rgba(255,255,255,0.1)"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_border",
+      "label": "Border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_hover_bg",
+      "label": "Hover background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_hover_color",
+      "label": "Hover text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Button Style"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Button vertical padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "Button horizontal padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_spacing",
+      "min": 20,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Button spacing from text",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between buttons",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Akhdar Hero Section"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,541 @@
+{% doc %}
+  @prompt
+    A text section that looks nice and stylized, animated somehow or some sind of nice effect. It's a message disclaimer type thing
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-disclaimer-section-{{ ai_gen_id }} {
+    position: relative;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    background: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    overflow: hidden;
+    margin:20px 0;}
+
+  .ai-disclaimer-section-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 2s ease-in-out;
+  }
+
+  .ai-disclaimer-section-{{ ai_gen_id }}:hover::before {
+    left: 100%;
+  }
+
+  .ai-disclaimer-content-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-disclaimer-icon-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    background-color: {{ block.settings.icon_background }};
+    color: {{ block.settings.icon_color }};
+    border-radius: 50%;
+    margin-bottom: 16px;
+    transform: scale(1);
+    transition: transform 0.3s ease;
+  }
+
+  .ai-disclaimer-section-{{ ai_gen_id }}:hover .ai-disclaimer-icon-{{ ai_gen_id }} {
+    transform: scale(1.1);
+  }
+
+  .ai-disclaimer-icon-{{ ai_gen_id }} svg {
+    width: calc({{ block.settings.icon_size }}px * 0.6);
+    height: calc({{ block.settings.icon_size }}px * 0.6);
+  }
+
+  .ai-disclaimer-title-{{ ai_gen_id }} {
+    color: {{ block.settings.title_color }};
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: {{ block.settings.title_weight }};
+    margin: 0 0 12px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: ai-disclaimer-fade-in-{{ ai_gen_id }} 0.8s ease-out 0.2s forwards;
+  }
+
+  .ai-disclaimer-text-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: ai-disclaimer-fade-in-{{ ai_gen_id }} 0.8s ease-out 0.4s forwards;
+  }
+
+  .ai-disclaimer-border-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    opacity: {{ block.settings.border_opacity | divided_by: 100.0 }};
+    pointer-events: none;}
+
+  .ai-disclaimer-accent-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      {{ block.settings.accent_color }},
+      transparent
+    );
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: ai-disclaimer-accent-grow-{{ ai_gen_id }} 1s ease-out 0.6s forwards;
+  }
+
+  @keyframes ai-disclaimer-fade-in-{{ ai_gen_id }} {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ai-disclaimer-accent-grow-{{ ai_gen_id }} {
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-disclaimer-section-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_vertical | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px;
+    }
+
+    .ai-disclaimer-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.9 }}px;
+    }
+
+    .ai-disclaimer-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+
+    .ai-disclaimer-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size | times: 0.8 }}px;
+      height: {{ block.settings.icon_size | times: 0.8 }}px;
+    }
+  }
+
+  /* Tooltip for "non-mahrams" */
+  .ai-term-{{ ai_gen_id }}{
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dotted currentColor;
+  }
+  .ai-term-{{ ai_gen_id }}:focus{
+    outline: 2px solid {{ block.settings.accent_color }};
+    outline-offset: 2px;
+  }
+  .ai-term-{{ ai_gen_id }}::after{
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 6px;
+    width: max-content;
+    max-width: 260px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 10;
+    white-space: normal;
+  }
+  .ai-term-{{ ai_gen_id }}::before{
+    content:'';
+    position:absolute;
+    left:50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    border:6px solid transparent;
+    border-top-color: rgba(0,0,0,0.9);
+    opacity:0;
+    transition: opacity .2s;
+    z-index: 10;
+  }
+  .ai-term-{{ ai_gen_id }}:hover::after,
+  .ai-term-{{ ai_gen_id }}:hover::before,
+  .ai-term-{{ ai_gen_id }}:focus::after,
+  .ai-term-{{ ai_gen_id }}:focus::before,
+  .ai-term-{{ ai_gen_id }}[data-open="true"]::after,
+  .ai-term-{{ ai_gen_id }}[data-open="true"]::before{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+{% endstyle %}<div class="ai-disclaimer-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-disclaimer-content-{{ ai_gen_id }}">
+    {% if block.settings.show_icon %}
+      <div class="ai-disclaimer-icon-{{ ai_gen_id }}">
+        {% case block.settings.icon_type %}
+          {% when 'info' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          {% when 'warning' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          {% when 'check' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22,4 12,14.01 9,11.01"></polyline>
+            </svg>
+          {% when 'shield' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+        {% endcase %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.title != blank %}
+      <h3 class="ai-disclaimer-title-{{ ai_gen_id }}">{{ block.settings.title }}</h3>
+    {% endif %}
+
+    {% if block.settings.text != blank %}
+      <div class="ai-disclaimer-text-{{ ai_gen_id }}">{{ block.settings.text }}</div>
+    {% endif %}
+  </div>
+
+  {% if block.settings.show_accent %}
+    <div class="ai-disclaimer-accent-{{ ai_gen_id }}"></div>
+  {% endif %}
+
+  {% if block.settings.border_width > 0 %}
+    <div class="ai-disclaimer-border-{{ ai_gen_id }}"></div>
+  {% endif %}
+</div>
+
+<script>
+(function(){
+  var root = document.querySelector('.ai-disclaimer-text-{{ ai_gen_id }}');
+  if(!root) return;
+
+  var def = 'Men you are allowed to marry according to Islamic law';
+  var pattern = /(non-?mahrams)/gi;
+
+  if (!root.dataset.termsEnhanced) {
+    root.innerHTML = root.innerHTML.replace(pattern, function(match){
+      var safeDef = def.replace(/"/g,'&quot;');
+      return '<span class="ai-term-{{ ai_gen_id }}" role="button" tabindex="0" aria-label="Definition: '+safeDef+'" data-tooltip="'+safeDef+'">'+match+'</span>';
+    });
+    root.dataset.termsEnhanced = 'true';
+  }
+
+  root.addEventListener('click', function(e){
+    var t = e.target.closest('.ai-term-{{ ai_gen_id }}');
+    if(!t) return;
+    var isOpen = t.getAttribute('data-open') === 'true';
+    document.querySelectorAll('.ai-term-{{ ai_gen_id }}[data-open="true"]').forEach(function(el){
+      el.setAttribute('data-open','false');
+    });
+    t.setAttribute('data-open', isOpen ? 'false' : 'true');
+    e.stopPropagation();
+  });
+
+  document.addEventListener('click', function(){
+    document.querySelectorAll('.ai-term-{{ ai_gen_id }}[data-open="true"]').forEach(function(el){
+      el.setAttribute('data-open','false');
+    });
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.ai-term-{{ ai_gen_id }}[data-open="true"]').forEach(function(el){
+        el.setAttribute('data-open','false');
+        el.blur();
+      });
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Disclaimer Message",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Important Notice"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Message text",
+      "default": "<p>This is an important disclaimer message that provides essential information to your customers.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show icon",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Icon type",
+      "options": [
+        {
+          "value": "info",
+          "label": "Info"
+        },
+        {
+          "value": "warning",
+          "label": "Warning"
+        },
+        {
+          "value": "check",
+          "label": "Check"
+        },
+        {
+          "value": "shield",
+          "label": "Shield"
+        }
+      ],
+      "default": "info"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#000f9f"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Border"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Border opacity",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Effects"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_accent",
+      "label": "Show accent line",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Disclaimer Message"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

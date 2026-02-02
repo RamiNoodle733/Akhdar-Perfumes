@@ -1,0 +1,431 @@
+{% comment %}
+Akhdar – 3D Bottle (AR + HUD, Mobile Rails cleanup + DESKTOP SIDES)
+- Phone: desktop panels fully hidden, only chips/flyouts show
+- Chips moved up; flyouts open higher (away from zoom/rotate)
+- Desktop: panels locked to LEFT/RIGHT sides again
+{% endcomment %}
+
+{%- liquid
+  assign glb = section.settings.glb_url
+  assign usdz = section.settings.usdz_url
+  assign poster_img = section.settings.poster | image_url: width: 1600
+  assign env_img = section.settings.environment_image
+-%}
+
+<section id="akhdar-3d-{{ section.id }}" class="akhdar-3d-wrap color-{{ section.settings.color_scheme }}" data-panels="{{ section.settings.panels_layout }}">
+  <div class="akhdar-3d-bg">
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="grid"></div>
+  </div>
+
+  {% if section.settings.show_label %}
+  <div class="hud-label">
+    <span class="hud-kicker">Product</span>
+    <strong>{{ section.settings.product_label }}</strong>
+  </div>
+  {% endif %}
+
+  <div class="akhdar-3d-stage">
+    <!-- RETICLE -->
+    <div class="hud-reticle" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="sweep"></div><div class="dot"></div>
+    </div>
+
+    <model-viewer
+      id="mv-{{ section.id }}"
+      class="allow-pan-y"
+      style="width:100%;height:{{ section.settings.height }}vh;max-height:{{ section.settings.max_height }}px;"
+      {% if glb != blank %}src="{{ glb }}"{% endif %}
+      {% if usdz != blank %}ios-src="{{ usdz }}"{% endif %}
+      {% if poster_img and section.settings.use_poster %}poster="{{ poster_img }}"{% endif %}
+      alt="{{ section.settings.alt_text | escape }}"
+      {% unless section.settings.lock_interaction %}{% if section.settings.controls_default_on %}camera-controls{% endif %}{% endunless %}
+      {% if section.settings.disable_zoom %}disable-zoom{% endif %}
+      {% if section.settings.auto_rotate %}auto-rotate{% endif %}
+      rotation-per-second="{{ section.settings.rotation_per_second }}deg"
+      {% if section.settings.instant_show %}loading="eager" reveal="auto"{% else %}loading="lazy" reveal="interaction"{% endif %}
+      shadow-intensity="0.6"
+      {% if section.settings.enable_ar %}ar ar-modes="webxr scene-viewer quick-look"{% endif %}
+      camera-orbit="{{ section.settings.camera_orbit }}"
+      field-of-view="{{ section.settings.field_of_view }}"
+      exposure="{{ section.settings.exposure }}"
+      interaction-prompt="none"
+      {% if env_img != blank %}environment-image="{{ env_img }}"{% endif %}
+    >
+      {% if section.settings.enable_ar %}
+      <button class="ar-btn" slot="ar-button">View in your space</button>
+      {% endif %}
+
+      {% if section.settings.show_hotspots %}
+        {% for block in section.blocks %}
+          {% if block.type == 'hotspot' %}
+          <button class="hotspot" slot="hotspot-{{ forloop.index }}"
+            data-position="{{ block.settings.position }}"
+            data-normal="{{ block.settings.normal }}"
+            data-visibility-attribute="visible">
+            <div class="annotation">
+              <strong>{{ block.settings.title }}</strong>
+              <p>{{ block.settings.text }}</p>
+            </div>
+          </button>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </model-viewer>
+
+    {% if section.settings.show_rotate_toggle %}
+      <button class="rotate-toggle" type="button" aria-label="Enable rotation" aria-pressed="false" title="Enable rotate">⟳</button>
+    {% endif %}
+
+    {% if section.settings.show_zoom_controls %}
+      <div class="zoom-ui" aria-label="Zoom controls">
+        <button class="zoom-btn zoom-out" type="button" aria-label="Zoom out">−</button>
+        <button class="zoom-btn zoom-in" type="button" aria-label="Zoom in">+</button>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_tap_gate and section.settings.controls_default_on == false and section.settings.lock_interaction == false %}
+      <button class="tap-gate" type="button" aria-controls="mv-{{ section.id }}" aria-label="Enable 3D rotation">
+        <span class="dot"></span> Drag to rotate
+      </button>
+    {% endif %}
+
+    {% if section.settings.glow_ring %}<div class="gold-ring"></div>{% endif %}
+  </div>
+
+  {% if section.settings.show_side_panels %}
+  <!-- DESKTOP PANELS -->
+  <div class="hud-panels">
+    <div class="hud-panel left">
+      <i class="conn conn-right" aria-hidden="true"></i>
+      <div class="hud-title">Olfactive Family</div>
+      <div class="hud-body">{{ section.settings.olfactive_family }}</div>
+    </div>
+    <div class="hud-stack right">
+      <div class="hud-panel"><i class="conn conn-left" aria-hidden="true"></i><div class="hud-title">Top Notes</div><div class="hud-body">{{ section.settings.top_notes }}</div></div>
+      <div class="hud-panel"><i class="conn conn-left" aria-hidden="true"></i><div class="hud-title">Middle Notes</div><div class="hud-body">{{ section.settings.middle_notes }}</div></div>
+      <div class="hud-panel"><i class="conn conn-left" aria-hidden="true"></i><div class="hud-title">Base Notes</div><div class="hud-body">{{ section.settings.base_notes }}</div></div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- MOBILE RAILS -->
+  <div class="hud-rails" aria-label="Scent info">
+    <div class="rail left-rail">
+      <button class="chip" data-flyout="olf"><span class="dot"></span>Olfactive</button>
+    </div>
+    <div class="rail right-rail">
+      <button class="chip" data-flyout="top"><span class="dot"></span>Top</button>
+      <button class="chip" data-flyout="mid"><span class="dot"></span>Middle</button>
+      <button class="chip" data-flyout="base"><span class="dot"></span>Base</button>
+    </div>
+
+    <div class="flyout flyout-left" id="fly-olf">
+      <div class="hud-title">Olfactive Family</div>
+      <div class="hud-body">{{ section.settings.olfactive_family }}</div>
+    </div>
+    <div class="flyout flyout-right" id="fly-top">
+      <div class="hud-title">Top Notes</div>
+      <div class="hud-body">{{ section.settings.top_notes }}</div>
+    </div>
+    <div class="flyout flyout-right" id="fly-mid">
+      <div class="hud-title">Middle Notes</div>
+      <div class="hud-body">{{ section.settings.middle_notes }}</div>
+    </div>
+    <div class="flyout flyout-right" id="fly-base">
+      <div class="hud-title">Base Notes</div>
+      <div class="hud-body">{{ section.settings.base_notes }}</div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* --- base, bg, reticle, desktop panels, connectors, zoom, toggle, etc. --- */
+
+.akhdar-3d-wrap{position:relative;overflow:hidden;background:#0d1117}
+.akhdar-3d-stage{position:relative;isolation:isolate}
+model-viewer.allow-pan-y{touch-action: pan-y;}
+model-viewer{--poster-color:transparent}
+
+.akhdar-3d-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.akhdar-3d-bg .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,.65) 100%)}
+.akhdar-3d-bg .scanlines{position:absolute;inset:0;opacity:.14;mix-blend-mode:screen;background:repeating-linear-gradient(0deg, rgba(10,148,105,.12) 0 1px, transparent 1px 3px);animation:scan 6s linear infinite}
+@keyframes scan{0%{transform:translateY(-10%)}100%{transform:translateY(10%)}}
+.akhdar-3d-bg .grid{position:absolute;inset:-20% -10% auto -10%;height:55%;
+  background:radial-gradient(60% 100% at 50% 100%, rgba(10,148,105,.22), transparent 70%),
+  linear-gradient(rgba(211,174,57,.15), rgba(211,174,57,0)),
+  repeating-linear-gradient(90deg, rgba(211,174,57,.12) 0 1px, transparent 1px 40px),
+  repeating-linear-gradient(0deg, rgba(211,174,57,.12) 0 1px, transparent 1px 40px);
+  filter:blur(0.6px);}
+
+.hud-reticle{position:absolute;top:8%;left:50%;transform:translateX(-50%);width:clamp(420px, 42vw, 560px);height:84%;pointer-events:none;z-index:0}
+.hud-reticle .ring{position:absolute;inset:12% 8%;border-radius:999px;border:1px dashed rgba(125,225,192,.35);box-shadow:0 0 32px rgba(10,148,105,.16) inset;animation:rotate 18s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.hud-reticle .sweep{position:absolute;inset:12% 8%;border-radius:999px;background:conic-gradient(from 0deg, rgba(125,225,192,.18), transparent 35%, transparent 100%);animation:sweep 6s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.hud-reticle .dot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#7de1c0;box-shadow:0 0 12px rgba(125,225,192,.95), 0 0 32px rgba(10,148,105,.6)}
+.hud-reticle .corner{position:absolute;width:32px;height:32px;border:2px solid #7de1c0;opacity:.75;filter:drop-shadow(0 0 8px rgba(125,225,192,.55))}
+.hud-reticle .corner.tl{left:6%;top:10%;border-right:none;border-bottom:none;border-color:rgba(125,225,192,.6)}
+.hud-reticle .corner.tr{right:6%;top:10%;border-left:none;border-bottom:none;border-color:rgba(125,225,192,.6)}
+.hud-reticle .corner.bl{left:6%;bottom:10%;border-right:none;border-top:none;border-color:rgba(125,225,192,.6)}
+.hud-reticle .corner.br{right:6%;bottom:10%;border-left:none;border-top:none;border-color:rgba(125,225,192,.6)}
+
+.hud-label{position:absolute;z-index:2;left:1rem;top:1rem;color:#c9d1d9;background:rgba(22,27,34,.6);backdrop-filter:blur(6px);border:1px solid rgba(211,174,57,.35);border-radius:.75rem;padding:.5rem .75rem;display:inline-flex;gap:.6rem;align-items:center;box-shadow:0 12px 24px rgba(0,0,0,.25)}
+.hud-label .hud-kicker{padding:.15rem .45rem;border:1px solid rgba(10,148,105,.6);border-radius:.5rem;color:#7de1c0;font:600 12px/1 system-ui;letter-spacing:.02em;text-transform:uppercase}
+.hud-label strong{font:600 14px/1.1 system-ui}
+
+.hud-panels{pointer-events:none}
+.akhdar-3d-wrap[data-panels="sides"] .hud-panels{position:absolute;inset:0;z-index:2;display:grid;grid-template-columns: 1fr clamp(420px, 42vw, 560px) 1fr;align-items:center;gap:1rem}
+.akhdar-3d-wrap[data-panels="sides"] .hud-panels .left{grid-column:1/2;justify-self:center}
+.akhdar-3d-wrap[data-panels="sides"] .hud-panels .right{grid-column:3/4;justify-self:center}
+.akhdar-3d-wrap[data-panels="below"] .hud-panels{position:relative;z-index:1;margin:.9rem auto 0;max-width:min(92vw, 1100px);display:grid;grid-template-columns: repeat(3, minmax(220px, 1fr));gap:1rem;padding:0 1rem}
+.hud-stack{display:grid;gap:1rem}
+.hud-panel{min-width:260px;max-width:360px;background:rgba(22,27,34,.82);border:1px solid rgba(211,174,57,.35);box-shadow:inset 0 0 0 1px rgba(10,148,105,.28), 0 10px 30px rgba(0,0,0,.35);color:#c9d1d9;border-radius:.8rem;padding:.9rem 1rem;pointer-events:auto;position:relative}
+.hud-title{font:700 13px/1.1 system-ui;letter-spacing:.03em;color:#7de1c0;text-transform:uppercase;margin-bottom:.35rem}
+.hud-body{font:500 14px/1.35 system-ui;color:#c9d1d9}
+
+.conn{position:absolute;top:50%;transform:translateY(-50%);height:2px;pointer-events:none}
+.conn::before{content:"";position:absolute;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;box-shadow:0 0 12px rgba(125,225,192,.9);border:2px solid rgba(125,225,192,.9);background:radial-gradient(circle, rgba(125,225,192,1) 0 35%, rgba(125,225,192,0) 40%)}
+.conn::after{content:"";position:absolute;top:50%;transform:translateY(-50%);height:2px;background:linear-gradient(90deg, rgba(125,225,192,0), rgba(125,225,192,.8));box-shadow:0 0 10px rgba(125,225,192,.6)}
+.conn-right{right:-6vw;width:6vw}.conn-right::before{right:-7px}.conn-right::after{right:0;left:auto;width:100%}
+.conn-left{left:-6vw;width:6vw}.conn-left::before{left:-7px}.conn-left::after{left:0;width:100%;background:linear-gradient(270deg, rgba(125,225,192,0), rgba(125,225,192,.8))}
+
+.hud-panel:before{content:"";position:absolute;inset:-1px;border-radius:.85rem;background:linear-gradient(180deg, rgba(10,148,105,.25), rgba(10,148,105,0));mask:linear-gradient(#000,#000) content-box, linear-gradient(#000,#000);-webkit-mask:linear-gradient(#000,#000) content-box, linear-gradient(#000,#000);-webkit-mask-composite: xor; mask-composite: exclude; padding:1px;pointer-events:none}
+
+.zoom-ui{position:absolute;right:1rem;bottom:1rem;display:flex;gap:.5rem;z-index:2}
+.zoom-btn{width:40px;height:40px;border-radius:12px;border:1px solid rgba(211,174,57,.4);background:rgba(22,27,34,.7);color:#c9d1d9;font:700 20px/1 system-ui;backdrop-filter:blur(6px)}
+.zoom-btn:active{transform:scale(.96)}
+.rotate-toggle{position:absolute;left:50%;bottom:1rem;transform:translateX(-50%);width:40px;height:40px;border-radius:12px;border:1px solid rgba(211,174,57,.4);background:rgba(22,27,34,.7);color:#c9d1d9;font:700 18px/1 system-ui;backdrop-filter:blur(6px);z-index:2}
+.rotate-toggle.active{border-color:#7de1c0;color:#7de1c0}
+.ar-btn{position:absolute;left:1rem;bottom:1rem;padding:.6rem 1rem;border:1px solid #D3AE39;background:transparent;color:#D3AE39;border-radius:999px;font:600 14px/1.2 system-ui;backdrop-filter:blur(6px);pointer-events:auto}
+.gold-ring{position:absolute;left:10%;right:10%;bottom:6%;height:2px;filter:blur(6px);background:linear-gradient(90deg, transparent, #D3AE39, transparent);opacity:.65}
+
+/* ---- MOBILE-ONLY OVERRIDES ---- */
+.hud-rails{display:none}
+@media (max-width:900px){
+  #akhdar-3d-{{ section.id }} model-viewer{height:62vh !important}
+  #akhdar-3d-{{ section.id }} .hud-reticle{width:min(86vw,560px)}
+
+  /* hide desktop panels on phone */
+  #akhdar-3d-{{ section.id }} .hud-panels{display:none !important}
+  #akhdar-3d-{{ section.id }} .conn{display:none !important}
+
+  /* rails chips */
+  #akhdar-3d-{{ section.id }} .hud-rails{display:block;position:absolute;inset:0;z-index:2;pointer-events:none}
+  #akhdar-3d-{{ section.id }} .rail{position:absolute;top:34%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.6rem}
+  #akhdar-3d-{{ section.id }} .left-rail{left:.5rem}
+  #akhdar-3d-{{ section.id }} .right-rail{right:.5rem}
+  #akhdar-3d-{{ section.id }} .chip{
+    pointer-events:auto; display:flex; align-items:center; gap:.4rem;
+    padding:.38rem .62rem; border-radius:.6rem; border:1px solid rgba(211,174,57,.35);
+    background:rgba(22,27,34,.88); color:#c9d1d9; font:700 12px/1 system-ui;
+    backdrop-filter:blur(6px); box-shadow:0 8px 16px rgba(0,0,0,.35)
+  }
+  #akhdar-3d-{{ section.id }} .chip .dot{width:8px;height:8px;border-radius:50%;background:#7de1c0;box-shadow:0 0 10px rgba(125,225,192,.8)}
+  #akhdar-3d-{{ section.id }} .chip:active{transform:scale(.98)}
+
+  /* flyouts */
+  #akhdar-3d-{{ section.id }} .flyout{
+    position:absolute; top:14vh; bottom:auto;
+    max-width:78vw; min-width:60vw;
+    pointer-events:auto; padding:.85rem 1rem; border-radius:.8rem;
+    background:rgba(22,27,34,.92); color:#c9d1d9;
+    border:1px solid rgba(211,174,57,.35);
+    box-shadow:inset 0 0 0 1px rgba(10,148,105,.25), 0 18px 36px rgba(0,0,0,.45);
+    display:none;
+  }
+  #akhdar-3d-{{ section.id }} .flyout-left{left:.5rem}
+  #akhdar-3d-{{ section.id }} .flyout-right{right:.5rem}
+  #akhdar-3d-{{ section.id }} .flyout.open{display:block}
+}
+
+/* keep sides on desktop; only loosen reticle width under 1280px */
+@media (max-width:1280px){
+  .hud-reticle{width:min(92vw,560px)}
+}
+/* explicit sides layout for desktop viewports */
+@media (min-width:901px){
+  #akhdar-3d-{{ section.id }}[data-panels="sides"] .hud-panels{
+    position:absolute; inset:0; z-index:2; display:grid;
+    grid-template-columns: 1fr clamp(420px, 42vw, 560px) 1fr;
+    align-items:center; gap:1rem;
+  }
+  #akhdar-3d-{{ section.id }}[data-panels="sides"] .hud-panels .left{grid-column:1/2; justify-self:center}
+  #akhdar-3d-{{ section.id }}[data-panels="sides"] .hud-panels .right{grid-column:3/4; justify-self:center}
+}
+</style>
+
+<script type="module" src="{{ 'model-viewer.min.js' | asset_url }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const mv   = document.getElementById('mv-{{ section.id }}');
+  const wrap = document.getElementById('akhdar-3d-{{ section.id }}');
+  const gate = wrap.querySelector('.tap-gate');
+  const rotBtn = wrap.querySelector('.rotate-toggle');
+
+  {% unless section.settings.instant_show %}
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { mv.setAttribute('reveal','auto'); io.disconnect(); }});
+  }, { rootMargin: '150px' });
+  io.observe(mv);
+  {% endunless %}
+
+  const startLocked = {{ section.settings.lock_interaction | json }};
+  function setControls(on){
+    if(on){ mv.setAttribute('camera-controls',''); mv.removeAttribute('interaction-policy'); rotBtn?.classList.add('active'); rotBtn?.setAttribute('aria-pressed','true'); }
+    else{  mv.removeAttribute('camera-controls'); mv.setAttribute('interaction-policy','none'); rotBtn?.classList.remove('active'); rotBtn?.setAttribute('aria-pressed','false'); }
+  }
+  setControls(!startLocked && {{ section.settings.controls_default_on | json }});
+  rotBtn?.addEventListener('click', () => setControls(!rotBtn.classList.contains('active')), {passive:true});
+
+  {% if section.settings.show_tap_gate and section.settings.controls_default_on == false and section.settings.lock_interaction == false %}
+  function enableControls(){ if(!mv.hasAttribute('camera-controls')) mv.setAttribute('camera-controls',''); if(!mv.hasAttribute('disable-zoom') && {{ section.settings.disable_zoom | json }}) mv.setAttribute('disable-zoom',''); gate.style.display='none'; }
+  gate?.addEventListener('click', enableControls, {passive:true});
+  mv?.addEventListener('click', () => { if (gate && getComputedStyle(gate).display !== 'none') enableControls(); }, {passive:true});
+  {% endif %}
+
+  {% if section.settings.scroll_rotate %}
+  function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
+  function onScroll(){ const rect=wrap.getBoundingClientRect(); const vh=Math.max(document.documentElement.clientHeight, window.innerHeight || 0); const visible=clamp(1 - (rect.top/vh), 0, 1); const deg=Math.round(visible*180); mv.cameraOrbit=`${deg}deg 75deg 100%`; }
+  document.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+  {% endif %}
+
+  {% if section.settings.show_zoom_controls %}
+  const btnIn  = wrap.querySelector('.zoom-in');
+  const btnOut = wrap.querySelector('.zoom-out');
+  function setRadius(mult){
+    const o = mv.getCameraOrbit();
+    const r = Math.max(60, Math.min(170, o.radius * mult));
+    mv.cameraOrbit = `${o.theta}rad ${o.phi}rad ${r}%`;
+  }
+  btnIn?.addEventListener('click',  () => setRadius(0.9));
+  btnOut?.addEventListener('click', () => setRadius(1.1));
+  {% endif %}
+
+  {% if section.settings.mobile_desktop_like %}
+  function applyMobileFraming(){
+    const isPhone = window.matchMedia('(max-width: 900px)').matches;
+    if(isPhone){
+      const orb = mv.getCameraOrbit();
+      mv.cameraOrbit = `${orb.theta}rad ${orb.phi}rad {{ section.settings.mobile_radius_percent }}%`;
+      mv.fieldOfView = `{{ section.settings.mobile_field_of_view_deg }}deg`;
+    }else{
+      mv.cameraOrbit = `{{ section.settings.camera_orbit }}`;
+      mv.fieldOfView = `{{ section.settings.field_of_view }}`;
+    }
+  }
+  mv.addEventListener('load', applyMobileFraming, {once:true});
+  mv.addEventListener('poster-dismissed', applyMobileFraming, {once:true});
+  setTimeout(applyMobileFraming, 150);
+  window.addEventListener('resize', applyMobileFraming, {passive:true});
+  {% endif %}
+
+  /* Rails */
+  const chips = wrap.querySelectorAll('.hud-rails .chip');
+  const flyouts = {
+    'olf': wrap.querySelector('#fly-olf'),
+    'top': wrap.querySelector('#fly-top'),
+    'mid': wrap.querySelector('#fly-mid'),
+    'base': wrap.querySelector('#fly-base')
+  };
+  function closeAll(){ Object.values(flyouts).forEach(f => f && f.classList.remove('open')); }
+  chips.forEach(ch => ch.addEventListener('click', (e) => {
+    const id = ch.dataset.flyout;
+    const target = flyouts[id];
+    if(!target) return;
+    const open = target.classList.contains('open');
+    closeAll();
+    if(!open) target.classList.add('open');
+    e.stopPropagation();
+  }, {passive:true}));
+  document.addEventListener('click', closeAll, {passive:true});
+});
+</script>
+
+{% schema %}
+{
+  "name": "3D Bottle (AR + HUD)",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header","footer"] },
+  "settings": [
+    { "type":"text", "id":"alt_text", "label":"Alt text", "default":"Shell v2 5mL bottle – 3D" },
+
+    { "type":"url", "id":"glb_url", "label":"GLB URL (web 3D)", "info":"Upload to Content → Files, then paste the CDN link" },
+    { "type":"url", "id":"usdz_url", "label":"USDZ URL (iOS AR)", "info":"Upload to Content → Files, then paste the CDN link" },
+    { "type":"image_picker", "id":"poster", "label":"Poster image (optional)" },
+    { "type":"text", "id":"environment_image", "label":"Environment HDR (optional URL)" },
+
+    { "type":"checkbox", "id":"use_poster", "label":"Use poster image (recommended for LCP)", "default": true },
+    { "type":"checkbox", "id":"instant_show", "label":"Show instantly (no poster, eager load)", "default": false },
+
+    { "type":"checkbox", "id":"enable_ar", "label":"Enable AR button", "default": true },
+    { "type":"checkbox", "id":"auto_rotate", "label":"Auto-rotate", "default": true },
+    { "type":"range", "id":"rotation_per_second", "label":"Auto-rotate speed (deg/s)", "min": 10, "max": 90, "step": 5, "default": 45 },
+
+    { "type":"checkbox", "id":"disable_zoom", "label":"Disable zoom (prevents wheel hijack)", "default": true },
+    { "type":"checkbox", "id":"controls_default_on", "label":"Controls on by default (otherwise tap to enable)", "default": false },
+    { "type":"checkbox", "id":"lock_interaction", "label":"Lock interaction (no rotate/zoom on click)", "default": true },
+    { "type":"checkbox", "id":"show_rotate_toggle", "label":"Show rotate toggle button", "default": true },
+    { "type":"checkbox", "id":"show_tap_gate", "label":"Show 'Drag to rotate' gate (only if interaction unlocked)", "default": true },
+    { "type":"checkbox", "id":"show_zoom_controls", "label":"Show + / − zoom buttons", "default": true },
+
+    { "type":"text", "id":"camera_orbit", "label":"Camera orbit", "default":"-20deg 70deg 105%" },
+    { "type":"text", "id":"field_of_view", "label":"Field of view", "default":"22deg" },
+    { "type":"range", "id":"exposure", "label":"Exposure", "min":0.4, "max":1.4, "step":0.1, "default":1.0 },
+    { "type":"checkbox", "id":"scroll_rotate", "label":"Scroll-to-spin (subtle)", "default": true },
+
+    { "type":"checkbox", "id":"mobile_desktop_like", "label":"On phones: zoom out to desktop-like framing", "default": true },
+    { "type":"range", "id":"mobile_radius_percent", "label":"Phone radius (%)", "min": 110, "max": 170, "step": 1, "default": 145 },
+    { "type":"range", "id":"mobile_field_of_view_deg", "label":"Phone field of view (deg)", "min": 24, "max": 40, "step": 1, "default": 34 },
+
+    { "type":"checkbox", "id":"glow_ring", "label":"Show gold glow ring", "default": true },
+
+    { "type":"checkbox", "id":"show_label", "label":"Show product label badge", "default": true },
+    { "type":"text", "id":"product_label", "label":"Product label text", "default":"Shell v2 — Perfume Oil (5 mL Roll-On)" },
+
+    { "type":"checkbox", "id":"show_side_panels", "label":"Show desktop HUD panels", "default": true },
+    { "type":"select", "id":"panels_layout", "label":"HUD panel placement (desktop)", "default":"sides",
+      "options":[
+        { "value":"sides", "label":"Sides (desktop), auto 'Below' on smaller desktops" },
+        { "value":"below", "label":"Below (always on desktop)" }
+      ]
+    },
+    { "type":"text", "id":"olfactive_family", "label":"Olfactive Family", "default":"Woody · Floral · Amber (Rose-Oud)" },
+    { "type":"textarea", "id":"top_notes", "label":"Top Notes", "default":"Sweet Orange, Clove, Lavender" },
+    { "type":"textarea", "id":"middle_notes", "label":"Middle Notes", "default":"Rose, Patchouli" },
+    { "type":"textarea", "id":"base_notes", "label":"Base Notes", "default":"Agarwood (Oud), Sandalwood, Labdanum (Amber), Clean Musk" },
+
+    { "type":"checkbox", "id":"show_hotspots", "label":"Show 3D hotspots (pins)", "default": false },
+
+    { "type":"select", "id":"color_scheme", "label":"Color scheme",
+      "options":[
+        { "value":"background-1", "label":"Background 1" },
+        { "value":"background-2", "label":"Background 2" },
+        { "value":"inverse", "label":"Inverse" },
+        { "value":"accent-1", "label":"Accent 1" },
+        { "value":"accent-2", "label":"Accent 2" }
+      ],
+      "default":"background-1"
+    },
+
+    { "type":"range", "id":"height", "label":"Viewport height (vh)", "min":40, "max":95, "step":1, "default":70 },
+    { "type":"range", "id":"max_height", "label":"Max height (px)", "min":360, "max":900, "step":10, "default":720 }
+  ],
+  "blocks": [
+    { "type":"hotspot", "name":"Hotspot (scent note)",
+      "settings":[
+        { "type":"text", "id":"title", "label":"Title", "default":"Top: Sweet Orange" },
+        { "type":"textarea", "id":"text", "label":"Text", "default":"Bright citrus that opens the blend." },
+        { "type":"text", "id":"position", "label":"3D position (e.g. 0.05m 0.12m 0.02m)", "default":"0m 0.12m 0m" },
+        { "type":"text", "id":"normal", "label":"Surface normal (e.g. 0 1 0)", "default":"0 1 0" }
+      ]
+    }
+  ],
+  "presets":[{ "name":"3D Bottle (AR + HUD)" }]
+}
+{% endschema %}

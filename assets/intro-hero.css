@@ -1,0 +1,215 @@
+/* Intro Hero Section Styles */
+.intro-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-background, rgba(var(--color-background), 1));
+  z-index: -1;
+}
+
+.intro-hero__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.intro-hero__content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+.intro-hero__logo {
+  width: 100%;
+  max-width: 600px;
+  height: 500px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  padding: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.intro-hero__logo:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.intro-hero__logo model-viewer {
+  border-radius: 15px;
+}
+
+.intro-hero__navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.intro-hero__title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(var(--color-foreground), 1);
+  margin: 0;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.intro-hero__nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.intro-hero__nav-item {
+  position: relative;
+}
+
+.intro-hero__nav-link {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #333 0%, #555 100%);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-hero__nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.intro-hero__nav-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #444 0%, #666 100%);
+}
+
+.intro-hero__nav-link:hover::before {
+  left: 100%;
+}
+
+.intro-hero__nav-link:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .intro-hero__container {
+    padding: 0 1rem;
+  }
+  
+  .intro-hero__content {
+    gap: 2rem;
+  }
+  
+  .intro-hero__logo {
+    height: 350px;
+    max-width: 100%;
+    padding: 1rem;
+  }
+  
+  .intro-hero__title {
+    font-size: 2rem;
+  }
+  
+  .intro-hero__nav-list {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .intro-hero__nav-link {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .intro-hero {
+    padding: 2rem 0;
+  }
+  
+  .intro-hero__logo {
+    height: 280px;
+    padding: 0.5rem;
+  }
+  
+  .intro-hero__title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.intro-hero__logo,
+.intro-hero__navigation {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.intro-hero__navigation {
+  animation-delay: 0.2s;
+}
+
+/* Loading state for model-viewer */
+model-viewer {
+  --poster-color: transparent;
+}
+
+model-viewer:not([loaded]) {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="none" stroke="%23ccc" stroke-width="4"><animate attributeName="stroke-dasharray" values="0,126;63,63;0,126" dur="1.5s" repeatCount="indefinite"/></circle></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60px;
+}
