@@ -161,4 +161,4 @@ MIT
 
 ## Support
 
-For support, email support@akhdar-perfumes.com
+For support, email akhdarperfumes@gmail.com
