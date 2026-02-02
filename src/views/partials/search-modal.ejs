@@ -1,0 +1,177 @@
+<!-- Search Modal -->
+<div id="search-modal" class="fixed inset-0 z-50 hidden">
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/50" onclick="closeSearchModal()"></div>
+  
+  <!-- Modal -->
+  <div class="absolute inset-x-4 top-20 max-w-2xl mx-auto bg-white rounded-lg shadow-2xl transform transition-all duration-300 scale-95 opacity-0" id="search-modal-panel">
+    <form action="/search" method="GET" class="relative">
+      <div class="flex items-center p-4 border-b">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input 
+          type="search" 
+          name="q" 
+          id="search-input"
+          placeholder="Search for products, collections..." 
+          class="flex-1 px-4 py-2 text-base outline-none"
+          autocomplete="off"
+          autofocus
+        >
+        <button type="button" onclick="closeSearchModal()" class="p-2 -mr-2 text-gray-400 hover:text-gray-600">
+          <span class="sr-only">Close</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Search Results -->
+      <div id="search-results" class="p-4 max-h-96 overflow-y-auto hidden">
+        <div id="search-loading" class="text-center py-8 hidden">
+          <div class="inline-block w-8 h-8 border-2 border-gray-300 border-t-emerald-600 rounded-full animate-spin"></div>
+        </div>
+        
+        <div id="search-empty" class="text-center py-8 hidden">
+          <p class="text-gray-500">No results found</p>
+        </div>
+        
+        <div id="search-products" class="hidden">
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">Products</h3>
+          <ul id="search-products-list" class="space-y-3"></ul>
+        </div>
+        
+        <div id="search-collections" class="mt-6 hidden">
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">Collections</h3>
+          <ul id="search-collections-list" class="space-y-2"></ul>
+        </div>
+      </div>
+      
+      <!-- Quick Links -->
+      <div id="quick-links" class="p-4 border-t">
+        <h3 class="text-sm font-semibold text-gray-900 mb-3">Popular Searches</h3>
+        <div class="flex flex-wrap gap-2">
+          <a href="/collections/oud" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">Oud</a>
+          <a href="/collections/attar" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">Attar</a>
+          <a href="/collections/musk" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">Musk</a>
+          <a href="/collections/rose" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">Rose</a>
+          <a href="/collections/amber" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">Amber</a>
+          <a href="/collections/best-sellers" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">Best Sellers</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+let searchTimeout;
+
+function openSearchModal() {
+  const modal = document.getElementById('search-modal');
+  const panel = document.getElementById('search-modal-panel');
+  const input = document.getElementById('search-input');
+  
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    panel.classList.remove('scale-95', 'opacity-0');
+    panel.classList.add('scale-100', 'opacity-100');
+    input.focus();
+  }, 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSearchModal() {
+  const modal = document.getElementById('search-modal');
+  const panel = document.getElementById('search-modal-panel');
+  
+  panel.classList.remove('scale-100', 'opacity-100');
+  panel.classList.add('scale-95', 'opacity-0');
+  setTimeout(() => {
+    modal.classList.add('hidden');
+  }, 300);
+  document.body.style.overflow = '';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeSearchModal();
+    closeCartDrawer();
+  }
+});
+
+// Open search with Cmd/Ctrl + K
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearchModal();
+  }
+});
+
+// Predictive search
+document.getElementById('search-input')?.addEventListener('input', (e) => {
+  const query = e.target.value.trim();
+  
+  clearTimeout(searchTimeout);
+  
+  if (query.length < 2) {
+    document.getElementById('search-results').classList.add('hidden');
+    document.getElementById('quick-links').classList.remove('hidden');
+    return;
+  }
+  
+  document.getElementById('quick-links').classList.add('hidden');
+  document.getElementById('search-results').classList.remove('hidden');
+  document.getElementById('search-loading').classList.remove('hidden');
+  document.getElementById('search-empty').classList.add('hidden');
+  document.getElementById('search-products').classList.add('hidden');
+  document.getElementById('search-collections').classList.add('hidden');
+  
+  searchTimeout = setTimeout(async () => {
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      
+      document.getElementById('search-loading').classList.add('hidden');
+      
+      if (data.products.length === 0 && data.collections.length === 0) {
+        document.getElementById('search-empty').classList.remove('hidden');
+        return;
+      }
+      
+      if (data.products.length > 0) {
+        document.getElementById('search-products').classList.remove('hidden');
+        document.getElementById('search-products-list').innerHTML = data.products.map(product => `
+          <li>
+            <a href="/products/${product.handle}" class="flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -mx-2 transition-colors">
+              <div class="w-12 h-12 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
+                ${product.images && product.images[0] ? `<img src="${product.images[0]}" alt="${product.title}" class="w-full h-full object-cover">` : ''}
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 truncate">${product.title}</p>
+                <p class="text-sm text-gray-500">$${product.price.toFixed(2)}</p>
+              </div>
+            </a>
+          </li>
+        `).join('');
+      }
+      
+      if (data.collections.length > 0) {
+        document.getElementById('search-collections').classList.remove('hidden');
+        document.getElementById('search-collections-list').innerHTML = data.collections.map(collection => `
+          <li>
+            <a href="/collections/${collection.handle}" class="block hover:bg-gray-50 rounded-lg p-2 -mx-2 transition-colors">
+              <p class="text-sm font-medium text-gray-900">${collection.title}</p>
+            </a>
+          </li>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      document.getElementById('search-loading').classList.add('hidden');
+      document.getElementById('search-empty').classList.remove('hidden');
+    }
+  }, 300);
+});
+</script>

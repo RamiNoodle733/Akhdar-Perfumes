@@ -1,0 +1,293 @@
+<!-- Hero Section -->
+<section class="relative min-h-[80vh] flex items-center bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 overflow-hidden">
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 opacity-10">
+    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <pattern id="hero-pattern" patternUnits="userSpaceOnUse" width="40" height="40">
+          <path d="M0 20 L20 0 L40 20 L20 40 Z" fill="none" stroke="currentColor" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#hero-pattern)"/>
+    </svg>
+  </div>
+  
+  <div class="container mx-auto px-4 py-20">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Content -->
+      <div class="text-white space-y-6 text-center lg:text-left">
+        <p class="text-sm uppercase tracking-[0.3em] text-emerald-300">Artisan Perfumery</p>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight">
+          Discover the<br>
+          <span class="text-amber-300">Essence of Luxury</span>
+        </h1>
+        <p class="text-lg text-emerald-100 max-w-lg mx-auto lg:mx-0">
+          Experience our collection of authentic Arabian attars and ouds, crafted with centuries-old traditions and the finest natural ingredients.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="/collections/all" class="inline-flex items-center justify-center px-8 py-4 bg-amber-500 hover:bg-amber-400 text-emerald-900 font-semibold rounded transition-colors">
+            Explore Collection
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          <a href="/pages/our-story" class="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 hover:border-white/60 text-white font-semibold rounded transition-colors">
+            Our Story
+          </a>
+        </div>
+      </div>
+      
+      <!-- 3D Bottle Viewer -->
+      <div class="relative h-[400px] lg:h-[500px]">
+        <% if (featuredProduct && featuredProduct.glbUrl) { %>
+          <model-viewer
+            src="<%= featuredProduct.glbUrl %>"
+            ios-src="<%= featuredProduct.usdzUrl || '' %>"
+            poster="<%= featuredProduct.posterImage || featuredProduct.images[0] %>"
+            alt="<%= featuredProduct.title %>"
+            auto-rotate
+            camera-controls
+            shadow-intensity="1"
+            exposure="1"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            class="w-full h-full"
+          >
+            <button slot="ar-button" class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-full">
+              View in AR
+            </button>
+          </model-viewer>
+        <% } else { %>
+          <div class="w-full h-full flex items-center justify-center">
+            <img 
+              src="/images/hero-bottle.png" 
+              alt="Akhdar Perfumes" 
+              class="max-h-full object-contain drop-shadow-2xl"
+            >
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 animate-bounce">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- Featured Collections -->
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-serif text-gray-900">Shop by Collection</h2>
+      <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+        Explore our curated collections of premium fragrances
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% collections.slice(0, 6).forEach(collection => { %>
+        <a href="/collections/<%= collection.handle %>" class="group relative aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
+          <% if (collection.image) { %>
+            <img 
+              src="<%= collection.image %>" 
+              alt="<%= collection.title %>" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              loading="lazy"
+            >
+          <% } %>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+            <h3 class="text-xl font-semibold mb-1"><%= collection.title %></h3>
+            <% if (collection.description) { %>
+              <p class="text-sm text-white/80 line-clamp-2"><%= collection.description %></p>
+            <% } %>
+            <span class="inline-flex items-center mt-3 text-sm font-medium text-amber-300 group-hover:text-amber-200">
+              Shop Now
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </span>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-serif text-gray-900">Featured Products</h2>
+        <p class="mt-2 text-gray-600">Our most loved fragrances</p>
+      </div>
+      <a href="/collections/all" class="hidden sm:inline-flex items-center text-sm font-medium text-emerald-600 hover:text-emerald-700">
+        View All
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <% products.slice(0, 8).forEach(product => { %>
+        <%- include('../partials/product-card', { product, includeScript: false }) %>
+      <% }); %>
+    </div>
+    
+    <div class="text-center mt-10 sm:hidden">
+      <a href="/collections/all" class="inline-flex items-center px-6 py-3 border border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded transition-colors font-medium">
+        View All Products
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Story/About Section -->
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="relative">
+        <img 
+          src="/images/about-craftsman.jpg" 
+          alt="Perfume craftsman" 
+          class="rounded-lg shadow-xl"
+          loading="lazy"
+        >
+        <div class="absolute -bottom-6 -right-6 w-48 h-48 bg-amber-100 rounded-lg -z-10"></div>
+      </div>
+      <div class="space-y-6">
+        <p class="text-sm uppercase tracking-[0.2em] text-emerald-600">Our Heritage</p>
+        <h2 class="text-3xl md:text-4xl font-serif text-gray-900">
+          Centuries of Perfume<br>Craftsmanship
+        </h2>
+        <p class="text-gray-600 leading-relaxed">
+          For generations, the art of attar making has been passed down through our family. Each fragrance is a testament to our commitment to quality and tradition.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+          We source the finest natural ingredients from around the world – oud from the ancient forests of Southeast Asia, rose from the valleys of Taif, and amber from the coast of the Arabian Peninsula.
+        </p>
+        <a href="/pages/our-story" class="inline-flex items-center font-medium text-emerald-600 hover:text-emerald-700">
+          Learn More About Us
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-20 bg-emerald-900 text-white">
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="text-3xl md:text-4xl font-serif">Join Our Fragrance Journey</h2>
+    <p class="mt-4 text-emerald-200 max-w-xl mx-auto">
+      Subscribe to receive exclusive offers, early access to new releases, and fragrance tips from our master perfumers.
+    </p>
+    <form action="/newsletter" method="POST" class="mt-8 max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+      <input 
+        type="email" 
+        name="email" 
+        placeholder="Enter your email" 
+        required
+        class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded text-white placeholder-white/50 focus:outline-none focus:border-white/40"
+      >
+      <button type="submit" class="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-emerald-900 font-semibold rounded transition-colors">
+        Subscribe
+      </button>
+    </form>
+    <p class="mt-4 text-sm text-emerald-300">We respect your privacy. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-serif text-gray-900">What Our Customers Say</h2>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white p-8 rounded-lg shadow-sm">
+        <div class="flex text-amber-400 mb-4">
+          <% for(let i = 0; i < 5; i++) { %>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          <% } %>
+        </div>
+        <p class="text-gray-600 italic mb-4">
+          "The Oud collection is absolutely mesmerizing. The scent lasts all day and I receive compliments everywhere I go."
+        </p>
+        <p class="font-medium text-gray-900">Sarah M.</p>
+        <p class="text-sm text-gray-500">Verified Buyer</p>
+      </div>
+      
+      <div class="bg-white p-8 rounded-lg shadow-sm">
+        <div class="flex text-amber-400 mb-4">
+          <% for(let i = 0; i < 5; i++) { %>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          <% } %>
+        </div>
+        <p class="text-gray-600 italic mb-4">
+          "Finally found authentic Arabian attars. The quality is unmatched and the packaging is beautiful."
+        </p>
+        <p class="font-medium text-gray-900">Ahmed K.</p>
+        <p class="text-sm text-gray-500">Verified Buyer</p>
+      </div>
+      
+      <div class="bg-white p-8 rounded-lg shadow-sm">
+        <div class="flex text-amber-400 mb-4">
+          <% for(let i = 0; i < 5; i++) { %>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          <% } %>
+        </div>
+        <p class="text-gray-600 italic mb-4">
+          "Exceptional customer service and the fragrances are divine. This is my go-to shop for premium perfumes."
+        </p>
+        <p class="font-medium text-gray-900">Layla T.</p>
+        <p class="text-sm text-gray-500">Verified Buyer</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Include product card quick add script once
+async function quickAddToCart(productId) {
+  try {
+    const response = await fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ 
+        productId: productId,
+        quantity: 1 
+      })
+    });
+    const data = await response.json();
+    if (data.success) {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        cartCount.textContent = data.cart.itemCount;
+        cartCount.classList.remove('hidden');
+      }
+      openCartDrawer();
+    }
+  } catch (error) {
+    console.error('Failed to add to cart:', error);
+  }
+}
+</script>

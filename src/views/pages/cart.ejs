@@ -1,0 +1,301 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-12">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500 mb-8">
+      <a href="/" class="hover:text-gray-900">Home</a>
+      <span class="mx-2">/</span>
+      <span class="text-gray-900">Shopping Cart</span>
+    </nav>
+    
+    <h1 class="text-3xl font-serif text-gray-900 mb-8">Shopping Cart</h1>
+    
+    <% if (cart.items.length === 0) { %>
+      <!-- Empty Cart -->
+      <div class="bg-white rounded-lg shadow-sm p-12 text-center">
+        <svg class="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <h2 class="mt-6 text-xl font-medium text-gray-900">Your cart is empty</h2>
+        <p class="mt-2 text-gray-600">Looks like you haven't added anything to your cart yet.</p>
+        <a href="/collections/all" class="mt-6 inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-md transition-colors">
+          Start Shopping
+        </a>
+      </div>
+    <% } else { %>
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <!-- Header -->
+            <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 text-sm font-medium text-gray-600">
+              <div class="col-span-6">Product</div>
+              <div class="col-span-2 text-center">Price</div>
+              <div class="col-span-2 text-center">Quantity</div>
+              <div class="col-span-2 text-right">Total</div>
+            </div>
+            
+            <!-- Items -->
+            <ul class="divide-y divide-gray-200">
+              <% cart.items.forEach((item, index) => { %>
+                <li class="px-6 py-6">
+                  <div class="grid grid-cols-12 gap-4 items-center">
+                    <!-- Product -->
+                    <div class="col-span-12 md:col-span-6 flex items-center gap-4">
+                      <div class="w-20 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                        <% if (item.image) { %>
+                          <img src="<%= item.image %>" alt="<%= item.title %>" class="w-full h-full object-cover">
+                        <% } %>
+                      </div>
+                      <div class="min-w-0">
+                        <h3 class="text-sm font-medium text-gray-900 truncate">
+                          <a href="/products/<%= item.handle %>" class="hover:text-emerald-600">
+                            <%= item.title %>
+                          </a>
+                        </h3>
+                        <% if (item.variant) { %>
+                          <p class="mt-1 text-sm text-gray-500"><%= item.variant %></p>
+                        <% } %>
+                        <!-- Mobile price -->
+                        <p class="mt-1 text-sm text-gray-900 md:hidden">$<%= item.price.toFixed(2) %></p>
+                      </div>
+                    </div>
+                    
+                    <!-- Price -->
+                    <div class="hidden md:block col-span-2 text-center text-sm text-gray-900">
+                      $<%= item.price.toFixed(2) %>
+                    </div>
+                    
+                    <!-- Quantity -->
+                    <div class="col-span-6 md:col-span-2 flex justify-start md:justify-center">
+                      <div class="flex items-center border rounded-md">
+                        <button 
+                          type="button" 
+                          onclick="updateQuantity(<%= index %>, <%= item.quantity - 1 %>)"
+                          class="px-3 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50"
+                          <%= item.quantity <= 1 ? 'disabled' : '' %>
+                        >−</button>
+                        <input 
+                          type="number" 
+                          value="<%= item.quantity %>" 
+                          min="1" 
+                          max="10"
+                          onchange="updateQuantity(<%= index %>, this.value)"
+                          class="w-12 text-center border-x py-2 text-sm focus:outline-none"
+                        >
+                        <button 
+                          type="button" 
+                          onclick="updateQuantity(<%= index %>, <%= item.quantity + 1 %>)"
+                          class="px-3 py-2 text-gray-600 hover:text-gray-900"
+                        >+</button>
+                      </div>
+                    </div>
+                    
+                    <!-- Total & Remove -->
+                    <div class="col-span-6 md:col-span-2 flex items-center justify-end gap-4">
+                      <span class="text-sm font-medium text-gray-900">$<%= (item.price * item.quantity).toFixed(2) %></span>
+                      <button 
+                        type="button" 
+                        onclick="removeItem(<%= index %>)"
+                        class="text-gray-400 hover:text-red-600 transition-colors"
+                        aria-label="Remove item"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+          
+          <!-- Continue Shopping -->
+          <div class="flex items-center justify-between">
+            <a href="/collections/all" class="inline-flex items-center text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Continue Shopping
+            </a>
+            <button 
+              type="button" 
+              onclick="clearCart()"
+              class="text-sm text-gray-500 hover:text-red-600"
+            >
+              Clear Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+            <h2 class="text-lg font-semibold text-gray-900 mb-6">Order Summary</h2>
+            
+            <div class="space-y-4">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Subtotal (<%= cart.itemCount %> items)</span>
+                <span class="text-gray-900">$<%= cart.subtotal.toFixed(2) %></span>
+              </div>
+              
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Shipping</span>
+                <span class="text-gray-900">Calculated at checkout</span>
+              </div>
+              
+              <!-- Promo Code -->
+              <div class="pt-4 border-t">
+                <button 
+                  type="button" 
+                  onclick="togglePromoInput()"
+                  class="text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+                >
+                  Add promo code
+                </button>
+                <div id="promo-input" class="hidden mt-3">
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      id="promo-code"
+                      placeholder="Enter code"
+                      class="flex-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    >
+                    <button 
+                      type="button"
+                      onclick="applyPromoCode()"
+                      class="px-4 py-2 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="pt-4 border-t flex justify-between">
+                <span class="text-base font-semibold text-gray-900">Total</span>
+                <span class="text-base font-semibold text-gray-900">$<%= cart.subtotal.toFixed(2) %></span>
+              </div>
+            </div>
+            
+            <a 
+              href="/checkout" 
+              class="mt-6 block w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-center font-semibold rounded-md transition-colors"
+            >
+              Proceed to Checkout
+            </a>
+            
+            <!-- Trust Badges -->
+            <div class="mt-6 pt-6 border-t">
+              <div class="grid grid-cols-2 gap-4 text-center text-xs text-gray-500">
+                <div class="flex flex-col items-center gap-1">
+                  <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                  </svg>
+                  Secure Checkout
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                  </svg>
+                  Easy Returns
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+async function updateQuantity(index, quantity) {
+  quantity = parseInt(quantity);
+  if (quantity < 1) {
+    removeItem(index);
+    return;
+  }
+  
+  try {
+    const response = await fetch('/cart/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ index, quantity })
+    });
+    const data = await response.json();
+    if (data.success) {
+      location.reload();
+    }
+  } catch (error) {
+    console.error('Failed to update cart:', error);
+  }
+}
+
+async function removeItem(index) {
+  try {
+    const response = await fetch('/cart/remove', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ index })
+    });
+    const data = await response.json();
+    if (data.success) {
+      location.reload();
+    }
+  } catch (error) {
+    console.error('Failed to remove item:', error);
+  }
+}
+
+async function clearCart() {
+  if (!confirm('Are you sure you want to clear your cart?')) return;
+  
+  try {
+    const response = await fetch('/cart/clear', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await response.json();
+    if (data.success) {
+      location.reload();
+    }
+  } catch (error) {
+    console.error('Failed to clear cart:', error);
+  }
+}
+
+function togglePromoInput() {
+  const input = document.getElementById('promo-input');
+  input.classList.toggle('hidden');
+}
+
+async function applyPromoCode() {
+  const code = document.getElementById('promo-code').value;
+  if (!code) return;
+  
+  try {
+    const response = await fetch('/cart/promo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code })
+    });
+    const data = await response.json();
+    if (data.success) {
+      location.reload();
+    } else {
+      alert(data.message || 'Invalid promo code');
+    }
+  } catch (error) {
+    console.error('Failed to apply promo code:', error);
+  }
+}
+</script>

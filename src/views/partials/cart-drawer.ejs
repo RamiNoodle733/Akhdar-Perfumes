@@ -1,0 +1,162 @@
+<!-- Cart Drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/50" onclick="closeCartDrawer()"></div>
+  
+  <!-- Drawer -->
+  <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform duration-300 translate-x-full" id="cart-drawer-panel">
+    <div class="flex flex-col h-full">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b">
+        <h2 class="text-lg font-semibold">Your Cart</h2>
+        <button type="button" onclick="closeCartDrawer()" class="p-2 -mr-2" aria-label="Close cart">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Cart Items -->
+      <div class="flex-1 overflow-y-auto px-6 py-4" id="cart-items">
+        <% if (cart.items.length === 0) { %>
+          <div class="text-center py-12">
+            <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <p class="mt-4 text-gray-500">Your cart is empty</p>
+            <a href="/products" class="mt-4 inline-block text-emerald-600 hover:text-emerald-700 font-medium">
+              Continue Shopping
+            </a>
+          </div>
+        <% } else { %>
+          <ul class="divide-y divide-gray-200">
+            <% cart.items.forEach((item, index) => { %>
+              <li class="py-4 flex">
+                <div class="flex-shrink-0 w-20 h-24 bg-gray-100 rounded-md overflow-hidden">
+                  <% if (item.image) { %>
+                    <img src="<%= item.image %>" alt="<%= item.title %>" class="w-full h-full object-cover">
+                  <% } %>
+                </div>
+                <div class="ml-4 flex-1 flex flex-col">
+                  <div class="flex justify-between">
+                    <div>
+                      <h3 class="text-sm font-medium">
+                        <a href="/products/<%= item.handle %>" class="hover:text-emerald-600"><%= item.title %></a>
+                      </h3>
+                      <% if (item.variant) { %>
+                        <p class="mt-1 text-sm text-gray-500"><%= item.variant %></p>
+                      <% } %>
+                    </div>
+                    <p class="text-sm font-medium">$<%= (item.price * item.quantity).toFixed(2) %></p>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <div class="flex items-center border rounded">
+                      <button 
+                        type="button" 
+                        onclick="updateCartItem(<%= index %>, <%= item.quantity - 1 %>)"
+                        class="px-2 py-1 text-gray-600 hover:text-gray-900"
+                      >-</button>
+                      <span class="px-3 py-1 text-sm"><%= item.quantity %></span>
+                      <button 
+                        type="button" 
+                        onclick="updateCartItem(<%= index %>, <%= item.quantity + 1 %>)"
+                        class="px-2 py-1 text-gray-600 hover:text-gray-900"
+                      >+</button>
+                    </div>
+                    <button 
+                      type="button" 
+                      onclick="removeCartItem(<%= index %>)"
+                      class="text-sm text-red-600 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        <% } %>
+      </div>
+
+      <% if (cart.items.length > 0) { %>
+        <!-- Footer -->
+        <div class="border-t px-6 py-4 space-y-4">
+          <div class="flex justify-between text-base font-medium">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">$<%= cart.subtotal.toFixed(2) %></span>
+          </div>
+          <p class="text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+          <a 
+            href="/checkout" 
+            class="block w-full py-3 px-4 text-center text-white bg-black rounded-md hover:bg-gray-800 transition-colors font-medium"
+          >
+            Checkout
+          </a>
+          <a href="/cart" class="block text-center text-sm text-emerald-600 hover:text-emerald-700">
+            View Cart
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+function openCartDrawer() {
+  const drawer = document.getElementById('cart-drawer');
+  const panel = document.getElementById('cart-drawer-panel');
+  drawer.classList.remove('hidden');
+  setTimeout(() => {
+    panel.classList.remove('translate-x-full');
+  }, 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCartDrawer() {
+  const drawer = document.getElementById('cart-drawer');
+  const panel = document.getElementById('cart-drawer-panel');
+  panel.classList.add('translate-x-full');
+  setTimeout(() => {
+    drawer.classList.add('hidden');
+  }, 300);
+  document.body.style.overflow = '';
+}
+
+async function updateCartItem(index, quantity) {
+  try {
+    const response = await fetch('/cart/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ index, quantity })
+    });
+    const data = await response.json();
+    if (data.success) {
+      location.reload();
+    }
+  } catch (error) {
+    console.error('Failed to update cart:', error);
+  }
+}
+
+async function removeCartItem(index) {
+  try {
+    const response = await fetch('/cart/remove', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ index })
+    });
+    const data = await response.json();
+    if (data.success) {
+      location.reload();
+    }
+  } catch (error) {
+    console.error('Failed to remove item:', error);
+  }
+}
+</script>

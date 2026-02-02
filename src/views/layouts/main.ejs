@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="<%= typeof seo !== 'undefined' && seo?.description ? seo.description : settings.siteDescription %>">
+  
+  <title><%= title %></title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="<%= settings.favicon %>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+  
+  <!-- Model Viewer for 3D -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+</head>
+<body class="bg-white text-gray-900 font-sans antialiased">
+  <!-- Skip to content -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-black text-white px-4 py-2 z-50">
+    Skip to content
+  </a>
+
+  <!-- Announcement Bar -->
+  <div class="bg-emerald-800 text-white text-center py-2 px-4 text-sm">
+    <p>Free shipping on orders over $75 | Use code WELCOME10 for 10% off your first order</p>
+  </div>
+
+  <!-- Header -->
+  <%- include('../partials/header') %>
+
+  <!-- Flash Messages -->
+  <% if (success) { %>
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 text-center" role="alert">
+      <%= success %>
+    </div>
+  <% } %>
+  <% if (error) { %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 text-center" role="alert">
+      <%= error %>
+    </div>
+  <% } %>
+
+  <!-- Main Content -->
+  <main id="main-content" class="min-h-screen">
+    <%- body %>
+  </main>
+
+  <!-- Footer -->
+  <%- include('../partials/footer') %>
+
+  <!-- Cart Drawer -->
+  <%- include('../partials/cart-drawer') %>
+
+  <!-- Search Modal -->
+  <%- include('../partials/search-modal') %>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+</body>
+</html>

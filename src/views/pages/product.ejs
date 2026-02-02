@@ -1,0 +1,335 @@
+<div class="bg-white">
+  <!-- Breadcrumb -->
+  <div class="container mx-auto px-4 py-4">
+    <nav class="text-sm text-gray-500">
+      <a href="/" class="hover:text-gray-900">Home</a>
+      <span class="mx-2">/</span>
+      <a href="/products" class="hover:text-gray-900">Products</a>
+      <span class="mx-2">/</span>
+      <span class="text-gray-900"><%= product.title %></span>
+    </nav>
+  </div>
+  
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid lg:grid-cols-2 gap-12">
+      <!-- Product Gallery -->
+      <div class="space-y-4">
+        <!-- Main Image / 3D Viewer -->
+        <div class="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+          <% if (product.glbUrl) { %>
+            <model-viewer
+              id="product-model"
+              src="<%= product.glbUrl %>"
+              ios-src="<%= product.usdzUrl || '' %>"
+              poster="<%= product.images && product.images[0] %>"
+              alt="<%= product.title %>"
+              camera-controls
+              auto-rotate
+              shadow-intensity="1"
+              ar
+              ar-modes="webxr scene-viewer quick-look"
+              class="w-full h-full"
+            >
+              <button slot="ar-button" class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-emerald-600 text-white text-sm rounded-full hover:bg-emerald-700">
+                <span class="flex items-center">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                  View in AR
+                </span>
+              </button>
+            </model-viewer>
+          <% } else { %>
+            <img 
+              id="main-image"
+              src="<%= product.images && product.images[0] ? product.images[0] : '/images/placeholder.png' %>" 
+              alt="<%= product.title %>"
+              class="w-full h-full object-cover"
+            >
+          <% } %>
+          
+          <!-- Zoom Button -->
+          <% if (!product.glbUrl && product.images && product.images.length > 0) { %>
+            <button 
+              type="button" 
+              onclick="openZoomModal()"
+              class="absolute top-4 right-4 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
+              aria-label="Zoom"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
+              </svg>
+            </button>
+          <% } %>
+        </div>
+        
+        <!-- Thumbnails -->
+        <% if (product.images && product.images.length > 1) { %>
+          <div class="grid grid-cols-5 gap-3">
+            <% product.images.forEach((image, index) => { %>
+              <button 
+                type="button"
+                onclick="changeMainImage('<%= image %>')"
+                class="aspect-square bg-gray-100 rounded-md overflow-hidden border-2 <%= index === 0 ? 'border-emerald-600' : 'border-transparent hover:border-gray-300' %>"
+              >
+                <img src="<%= image %>" alt="<%= product.title %> <%= index + 1 %>" class="w-full h-full object-cover">
+              </button>
+            <% }); %>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Product Info -->
+      <div class="lg:sticky lg:top-24 lg:self-start space-y-6">
+        <% if (product.vendor) { %>
+          <p class="text-sm text-gray-500 uppercase tracking-wider"><%= product.vendor %></p>
+        <% } %>
+        
+        <h1 class="text-3xl md:text-4xl font-serif text-gray-900"><%= product.title %></h1>
+        
+        <!-- Price -->
+        <div class="flex items-baseline gap-3">
+          <span class="text-2xl font-semibold text-gray-900">$<%= product.price.toFixed(2) %></span>
+          <% if (product.compareAtPrice && product.compareAtPrice > product.price) { %>
+            <span class="text-lg text-gray-400 line-through">$<%= product.compareAtPrice.toFixed(2) %></span>
+            <span class="px-2 py-0.5 text-sm font-medium bg-red-100 text-red-700 rounded">
+              Save <%= Math.round((1 - product.price / product.compareAtPrice) * 100) %>%
+            </span>
+          <% } %>
+        </div>
+        
+        <!-- Fragrance Notes -->
+        <% if (product.topNotes || product.middleNotes || product.baseNotes) { %>
+          <div class="border-t border-b py-6 space-y-4">
+            <h3 class="font-medium text-gray-900">Fragrance Profile</h3>
+            <% if (product.olfactiveFamily) { %>
+              <p class="text-sm text-gray-600">
+                <span class="font-medium">Family:</span> <%= product.olfactiveFamily %>
+              </p>
+            <% } %>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+              <% if (product.topNotes && product.topNotes.length > 0) { %>
+                <div>
+                  <p class="font-medium text-gray-900 mb-1">Top Notes</p>
+                  <p class="text-gray-600"><%= product.topNotes.join(', ') %></p>
+                </div>
+              <% } %>
+              <% if (product.middleNotes && product.middleNotes.length > 0) { %>
+                <div>
+                  <p class="font-medium text-gray-900 mb-1">Heart Notes</p>
+                  <p class="text-gray-600"><%= product.middleNotes.join(', ') %></p>
+                </div>
+              <% } %>
+              <% if (product.baseNotes && product.baseNotes.length > 0) { %>
+                <div>
+                  <p class="font-medium text-gray-900 mb-1">Base Notes</p>
+                  <p class="text-gray-600"><%= product.baseNotes.join(', ') %></p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+        
+        <!-- Variants -->
+        <% if (product.variants && product.variants.length > 1) { %>
+          <div class="space-y-3">
+            <label class="font-medium text-gray-900">Size</label>
+            <div class="flex flex-wrap gap-2" id="variant-selector">
+              <% product.variants.forEach((variant, index) => { %>
+                <button 
+                  type="button"
+                  onclick="selectVariant(<%= index %>)"
+                  class="variant-btn px-4 py-2 border rounded-md <%= index === 0 ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-gray-300 hover:border-gray-400' %> <%= !variant.available ? 'opacity-50 cursor-not-allowed' : '' %>"
+                  <%= !variant.available ? 'disabled' : '' %>
+                  data-price="<%= variant.price %>"
+                  data-id="<%= variant._id %>"
+                >
+                  <%= variant.title %>
+                </button>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+        
+        <!-- Add to Cart Form -->
+        <form id="add-to-cart-form" class="space-y-4">
+          <input type="hidden" name="productId" value="<%= product._id %>">
+          <input type="hidden" name="variantId" id="selected-variant" value="<%= product.variants && product.variants[0] ? product.variants[0]._id : '' %>">
+          
+          <!-- Quantity -->
+          <div class="flex items-center gap-4">
+            <label class="font-medium text-gray-900">Quantity</label>
+            <div class="flex items-center border rounded-md">
+              <button type="button" onclick="decrementQty()" class="px-4 py-2 text-gray-600 hover:text-gray-900">−</button>
+              <input type="number" name="quantity" id="quantity" value="1" min="1" max="10" class="w-16 text-center border-x py-2 focus:outline-none">
+              <button type="button" onclick="incrementQty()" class="px-4 py-2 text-gray-600 hover:text-gray-900">+</button>
+            </div>
+          </div>
+          
+          <!-- Add to Cart Button -->
+          <% if (product.available) { %>
+            <button 
+              type="submit"
+              class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-md transition-colors flex items-center justify-center"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+              </svg>
+              Add to Cart
+            </button>
+          <% } else { %>
+            <button 
+              type="button"
+              disabled
+              class="w-full py-4 bg-gray-300 text-gray-500 font-semibold rounded-md cursor-not-allowed"
+            >
+              Sold Out
+            </button>
+          <% } %>
+          
+          <!-- Buy Now -->
+          <% if (product.available) { %>
+            <button 
+              type="button"
+              onclick="buyNow()"
+              class="w-full py-4 border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-semibold rounded-md transition-colors"
+            >
+              Buy Now
+            </button>
+          <% } %>
+        </form>
+        
+        <!-- Product Description -->
+        <% if (product.description) { %>
+          <div class="prose prose-sm max-w-none">
+            <h3 class="text-lg font-medium text-gray-900 mb-3">Description</h3>
+            <%- product.descriptionHtml || product.description %>
+          </div>
+        <% } %>
+        
+        <!-- Shipping Info -->
+        <div class="border-t pt-6 space-y-3">
+          <div class="flex items-center gap-3 text-sm text-gray-600">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            Free shipping on orders over $100
+          </div>
+          <div class="flex items-center gap-3 text-sm text-gray-600">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            30-day return policy
+          </div>
+          <div class="flex items-center gap-3 text-sm text-gray-600">
+            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            Authentic guarantee
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Related Products -->
+    <% if (relatedProducts && relatedProducts.length > 0) { %>
+      <section class="mt-20 border-t pt-16">
+        <h2 class="text-2xl font-serif text-gray-900 mb-8">You May Also Like</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <% relatedProducts.slice(0, 4).forEach(product => { %>
+            <%- include('../partials/product-card', { product, includeScript: false }) %>
+          <% }); %>
+        </div>
+      </section>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function changeMainImage(src) {
+  const mainImage = document.getElementById('main-image');
+  if (mainImage) {
+    mainImage.src = src;
+  }
+}
+
+function selectVariant(index) {
+  const buttons = document.querySelectorAll('.variant-btn');
+  buttons.forEach((btn, i) => {
+    if (i === index) {
+      btn.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-700');
+      btn.classList.remove('border-gray-300');
+      document.getElementById('selected-variant').value = btn.dataset.id;
+    } else {
+      btn.classList.remove('border-emerald-600', 'bg-emerald-50', 'text-emerald-700');
+      btn.classList.add('border-gray-300');
+    }
+  });
+}
+
+function incrementQty() {
+  const input = document.getElementById('quantity');
+  if (parseInt(input.value) < 10) {
+    input.value = parseInt(input.value) + 1;
+  }
+}
+
+function decrementQty() {
+  const input = document.getElementById('quantity');
+  if (parseInt(input.value) > 1) {
+    input.value = parseInt(input.value) - 1;
+  }
+}
+
+document.getElementById('add-to-cart-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  
+  try {
+    const response = await fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        productId: formData.get('productId'),
+        variantId: formData.get('variantId'),
+        quantity: parseInt(formData.get('quantity'))
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        cartCount.textContent = data.cart.itemCount;
+        cartCount.classList.remove('hidden');
+      }
+      openCartDrawer();
+    }
+  } catch (error) {
+    console.error('Failed to add to cart:', error);
+  }
+});
+
+async function buyNow() {
+  const form = document.getElementById('add-to-cart-form');
+  const formData = new FormData(form);
+  
+  try {
+    await fetch('/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: formData.get('productId'),
+        variantId: formData.get('variantId'),
+        quantity: parseInt(formData.get('quantity'))
+      })
+    });
+    window.location.href = '/checkout';
+  } catch (error) {
+    console.error('Failed:', error);
+  }
+}
+</script>

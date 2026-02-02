@@ -1,0 +1,409 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-12">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500 mb-8">
+      <a href="/" class="hover:text-gray-900">Home</a>
+      <span class="mx-2">/</span>
+      <a href="/cart" class="hover:text-gray-900">Cart</a>
+      <span class="mx-2">/</span>
+      <span class="text-gray-900">Checkout</span>
+    </nav>
+    
+    <h1 class="text-3xl font-serif text-gray-900 mb-8">Checkout</h1>
+    
+    <form id="checkout-form" class="grid lg:grid-cols-2 gap-8">
+      <!-- Customer Information -->
+      <div class="space-y-8">
+        <!-- Contact Info -->
+        <section class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Contact Information</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required
+                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="your@email.com"
+              >
+            </div>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="subscribe" class="rounded text-emerald-600 focus:ring-emerald-500">
+              <span class="text-sm text-gray-600">Email me with news and offers</span>
+            </label>
+          </div>
+        </section>
+        
+        <!-- Shipping Address -->
+        <section class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Shipping Address</h2>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <input 
+                  type="text" 
+                  id="firstName" 
+                  name="firstName" 
+                  required
+                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input 
+                  type="text" 
+                  id="lastName" 
+                  name="lastName" 
+                  required
+                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+              </div>
+            </div>
+            
+            <div>
+              <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+              <input 
+                type="text" 
+                id="address" 
+                name="address" 
+                required
+                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="Street address"
+              >
+            </div>
+            
+            <div>
+              <label for="apartment" class="block text-sm font-medium text-gray-700 mb-1">Apartment, suite, etc. (optional)</label>
+              <input 
+                type="text" 
+                id="apartment" 
+                name="apartment"
+                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                <input 
+                  type="text" 
+                  id="city" 
+                  name="city" 
+                  required
+                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+              </div>
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State / Province</label>
+                <input 
+                  type="text" 
+                  id="state" 
+                  name="state" 
+                  required
+                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                <select 
+                  id="country" 
+                  name="country" 
+                  required
+                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="AE">United Arab Emirates</option>
+                  <option value="SA">Saudi Arabia</option>
+                  <option value="AU">Australia</option>
+                  <option value="DE">Germany</option>
+                  <option value="FR">France</option>
+                </select>
+              </div>
+              <div>
+                <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP / Postal Code</label>
+                <input 
+                  type="text" 
+                  id="zip" 
+                  name="zip" 
+                  required
+                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+              </div>
+            </div>
+            
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <input 
+                type="tel" 
+                id="phone" 
+                name="phone"
+                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="For delivery updates"
+              >
+            </div>
+          </div>
+        </section>
+        
+        <!-- Shipping Method -->
+        <section class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Shipping Method</h2>
+          <div class="space-y-3">
+            <label class="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="shipping" value="standard" checked class="text-emerald-600 focus:ring-emerald-500">
+                <div>
+                  <p class="font-medium text-gray-900">Standard Shipping</p>
+                  <p class="text-sm text-gray-500">5-7 business days</p>
+                </div>
+              </div>
+              <span class="font-medium text-gray-900">$9.99</span>
+            </label>
+            
+            <label class="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="shipping" value="express" class="text-emerald-600 focus:ring-emerald-500">
+                <div>
+                  <p class="font-medium text-gray-900">Express Shipping</p>
+                  <p class="text-sm text-gray-500">2-3 business days</p>
+                </div>
+              </div>
+              <span class="font-medium text-gray-900">$19.99</span>
+            </label>
+            
+            <label class="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="shipping" value="overnight" class="text-emerald-600 focus:ring-emerald-500">
+                <div>
+                  <p class="font-medium text-gray-900">Overnight Shipping</p>
+                  <p class="text-sm text-gray-500">Next business day</p>
+                </div>
+              </div>
+              <span class="font-medium text-gray-900">$29.99</span>
+            </label>
+          </div>
+        </section>
+        
+        <!-- Payment -->
+        <section class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Payment</h2>
+          <p class="text-sm text-gray-600 mb-4">All transactions are secure and encrypted.</p>
+          
+          <!-- Stripe Elements will be mounted here -->
+          <div id="card-element" class="p-4 border rounded-md"></div>
+          <div id="card-errors" class="mt-2 text-sm text-red-600"></div>
+        </section>
+      </div>
+      
+      <!-- Order Summary -->
+      <div class="lg:pl-8">
+        <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Order Summary</h2>
+          
+          <!-- Cart Items -->
+          <ul class="divide-y divide-gray-200 mb-6">
+            <% cart.items.forEach(item => { %>
+              <li class="py-4 flex items-center gap-4">
+                <div class="relative w-16 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                  <% if (item.image) { %>
+                    <img src="<%= item.image %>" alt="<%= item.title %>" class="w-full h-full object-cover">
+                  <% } %>
+                  <span class="absolute -top-1 -right-1 w-5 h-5 bg-gray-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <%= item.quantity %>
+                  </span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-sm font-medium text-gray-900 truncate"><%= item.title %></h3>
+                  <% if (item.variant) { %>
+                    <p class="text-sm text-gray-500"><%= item.variant %></p>
+                  <% } %>
+                </div>
+                <p class="text-sm font-medium text-gray-900">$<%= (item.price * item.quantity).toFixed(2) %></p>
+              </li>
+            <% }); %>
+          </ul>
+          
+          <!-- Totals -->
+          <div class="space-y-3 text-sm border-t pt-6">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Subtotal</span>
+              <span class="text-gray-900">$<%= cart.subtotal.toFixed(2) %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Shipping</span>
+              <span class="text-gray-900" id="shipping-cost">$9.99</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Tax</span>
+              <span class="text-gray-900" id="tax-amount">$<%= (cart.subtotal * 0.0825).toFixed(2) %></span>
+            </div>
+            <div class="flex justify-between pt-3 border-t text-base font-semibold">
+              <span>Total</span>
+              <span id="order-total">$<%= (cart.subtotal + 9.99 + cart.subtotal * 0.0825).toFixed(2) %></span>
+            </div>
+          </div>
+          
+          <!-- Submit Button -->
+          <button 
+            type="submit"
+            id="submit-btn"
+            class="mt-6 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-md transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span id="btn-text">Complete Order</span>
+            <svg id="btn-spinner" class="hidden w-5 h-5 ml-2 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+          
+          <!-- Secure Checkout -->
+          <p class="mt-4 text-center text-xs text-gray-500">
+            <svg class="inline w-4 h-4 mr-1 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            Secure checkout powered by Stripe
+          </p>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+// Initialize Stripe
+const stripe = Stripe('<%= process.env.STRIPE_PUBLISHABLE_KEY %>');
+const elements = stripe.elements();
+
+// Create card element
+const cardElement = elements.create('card', {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#1f2937',
+      '::placeholder': {
+        color: '#9ca3af'
+      }
+    },
+    invalid: {
+      color: '#dc2626'
+    }
+  }
+});
+
+cardElement.mount('#card-element');
+
+// Handle card errors
+cardElement.on('change', (event) => {
+  const displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Update shipping cost on selection change
+document.querySelectorAll('input[name="shipping"]').forEach(radio => {
+  radio.addEventListener('change', updateTotals);
+});
+
+function updateTotals() {
+  const shipping = document.querySelector('input[name="shipping"]:checked').value;
+  const shippingCosts = { standard: 9.99, express: 19.99, overnight: 29.99 };
+  const subtotal = <%= cart.subtotal %>;
+  const shippingCost = shippingCosts[shipping];
+  const tax = subtotal * 0.0825;
+  const total = subtotal + shippingCost + tax;
+  
+  document.getElementById('shipping-cost').textContent = `$${shippingCost.toFixed(2)}`;
+  document.getElementById('tax-amount').textContent = `$${tax.toFixed(2)}`;
+  document.getElementById('order-total').textContent = `$${total.toFixed(2)}`;
+}
+
+// Handle form submission
+document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const btnSpinner = document.getElementById('btn-spinner');
+  
+  submitBtn.disabled = true;
+  btnText.textContent = 'Processing...';
+  btnSpinner.classList.remove('hidden');
+  
+  const formData = new FormData(e.target);
+  const shippingCosts = { standard: 9.99, express: 19.99, overnight: 29.99 };
+  const shipping = formData.get('shipping');
+  
+  try {
+    // Create payment intent
+    const response = await fetch('/checkout/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formData.get('email'),
+        shippingAddress: {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          address: formData.get('address'),
+          apartment: formData.get('apartment'),
+          city: formData.get('city'),
+          state: formData.get('state'),
+          country: formData.get('country'),
+          zip: formData.get('zip'),
+          phone: formData.get('phone')
+        },
+        shippingMethod: shipping,
+        shippingCost: shippingCosts[shipping]
+      })
+    });
+    
+    const { clientSecret, orderId } = await response.json();
+    
+    // Confirm card payment
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardElement,
+        billing_details: {
+          name: `${formData.get('firstName')} ${formData.get('lastName')}`,
+          email: formData.get('email'),
+          phone: formData.get('phone'),
+          address: {
+            line1: formData.get('address'),
+            line2: formData.get('apartment'),
+            city: formData.get('city'),
+            state: formData.get('state'),
+            postal_code: formData.get('zip'),
+            country: formData.get('country')
+          }
+        }
+      }
+    });
+    
+    if (error) {
+      document.getElementById('card-errors').textContent = error.message;
+      submitBtn.disabled = false;
+      btnText.textContent = 'Complete Order';
+      btnSpinner.classList.add('hidden');
+    } else if (paymentIntent.status === 'succeeded') {
+      window.location.href = `/checkout/success?order=${orderId}`;
+    }
+  } catch (err) {
+    console.error('Checkout error:', err);
+    document.getElementById('card-errors').textContent = 'An error occurred. Please try again.';
+    submitBtn.disabled = false;
+    btnText.textContent = 'Complete Order';
+    btnSpinner.classList.add('hidden');
+  }
+});
+</script>
