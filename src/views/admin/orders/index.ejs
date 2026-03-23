@@ -1,0 +1,69 @@
+<div class="mb-8">
+  <h1 class="text-2xl font-semibold text-gray-900">Orders</h1>
+  <p class="text-gray-600"><%= orders.length %> orders</p>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm overflow-hidden">
+  <table class="w-full">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fulfillment</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <% orders.forEach(order => { %>
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4">
+            <a href="/admin/orders/<%= order._id %>" class="font-medium text-emerald-600 hover:text-emerald-700">
+              #<%= order.orderNumber %>
+            </a>
+          </td>
+          <td class="px-6 py-4">
+            <p class="text-sm text-gray-900"><%= order.shippingAddress ? order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName : 'N/A' %></p>
+            <p class="text-sm text-gray-500"><%= order.email %></p>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-900">
+            <%= new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+          </td>
+          <td class="px-6 py-4">
+            <span class="inline-block px-2 py-1 text-xs rounded-full 
+              <%= order.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : '' %>
+              <%= order.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-700' : '' %>
+              <%= order.paymentStatus === 'failed' ? 'bg-red-100 text-red-700' : '' %>
+              <%= order.paymentStatus === 'refunded' ? 'bg-gray-100 text-gray-700' : '' %>
+            ">
+              <%= order.paymentStatus %>
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="inline-block px-2 py-1 text-xs rounded-full 
+              <%= order.fulfillmentStatus === 'fulfilled' ? 'bg-green-100 text-green-700' : '' %>
+              <%= order.fulfillmentStatus === 'unfulfilled' ? 'bg-yellow-100 text-yellow-700' : '' %>
+              <%= order.fulfillmentStatus === 'partial' ? 'bg-blue-100 text-blue-700' : '' %>
+              <%= order.fulfillmentStatus === 'cancelled' ? 'bg-red-100 text-red-700' : '' %>
+            ">
+              <%= order.fulfillmentStatus %>
+            </span>
+          </td>
+          <td class="px-6 py-4 font-medium text-gray-900">$<%= order.total.toFixed(2) %></td>
+          <td class="px-6 py-4 text-right">
+            <a href="/admin/orders/<%= order._id %>" class="text-emerald-600 hover:text-emerald-700">View</a>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  
+  <% if (orders.length === 0) { %>
+    <div class="p-12 text-center">
+      <h3 class="text-lg font-medium text-gray-900">No orders yet</h3>
+      <p class="mt-2 text-gray-500">Orders will appear here when customers make purchases.</p>
+    </div>
+  <% } %>
+</div>

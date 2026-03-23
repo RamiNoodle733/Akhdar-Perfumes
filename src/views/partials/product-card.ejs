@@ -2,16 +2,20 @@
   <a href="/products/<%= product.handle %>" class="block">
     <!-- Image -->
     <div class="relative aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
-      <% if (product.images && product.images.length > 0) { %>
+      <% 
+        const imgUrl = (img) => typeof img === 'string' ? img : (img && img.url ? img.url : '');
+        const hasImages = product.images && product.images.length > 0;
+      %>
+      <% if (hasImages) { %>
         <img 
-          src="<%= product.images[0] %>" 
+          src="<%= imgUrl(product.images[0]) %>" 
           alt="<%= product.title %>" 
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         >
         <% if (product.images.length > 1) { %>
           <img 
-            src="<%= product.images[1] %>" 
+            src="<%= imgUrl(product.images[1]) %>" 
             alt="<%= product.title %>" 
             class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
             loading="lazy"
@@ -68,7 +72,9 @@
           <span class="text-sm text-gray-400 line-through">$<%= product.compareAtPrice.toFixed(2) %></span>
         <% } %>
       </div>
-      <% if (product.olfactiveFamily) { %>
+      <% if (product.fragrance && product.fragrance.olfactiveFamily) { %>
+        <p class="text-xs text-gray-500"><%= product.fragrance.olfactiveFamily %></p>
+      <% } else if (product.olfactiveFamily) { %>
         <p class="text-xs text-gray-500"><%= product.olfactiveFamily %></p>
       <% } %>
     </div>

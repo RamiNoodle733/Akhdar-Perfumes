@@ -4,6 +4,36 @@ import Collection from '../models/Collection.js';
 
 const router = express.Router();
 
+// Predictive search API (used by search modal)
+router.get('/search', async (req, res) => {
+  try {
+    const { q, limit = 6 } = req.query;
+    
+    if (!q || q.length < 2) {
+      return res.json({ products: [], collections: [] });
+    }
+
+    const [products, collections] = await Promise.all([
+      Product.find(
+        { $text: { $search: q }, status: 'active' },
+        { score: { $meta: 'textScore' } }
+      )
+        .sort({ score: { $meta: 'textScore' } })
+        .limit(parseInt(limit))
+        .select('title handle price images'),
+      Collection.find({
+        title: { $regex: q, $options: 'i' },
+        published: true
+      }).limit(4).select('title handle')
+    ]);
+
+    res.json({ products, collections });
+  } catch (error) {
+    console.error('Search API error:', error);
+    res.status(500).json({ products: [], collections: [], error: 'Search failed' });
+  }
+});
+
 // Search products API
 router.get('/products/search', async (req, res) => {
   try {

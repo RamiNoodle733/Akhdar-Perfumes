@@ -2,9 +2,10 @@
   <!-- Collection Hero -->
   <% if (collection) { %>
     <div class="relative h-64 md:h-80 bg-emerald-900 overflow-hidden">
-      <% if (collection.image) { %>
+      <% const collImg = collection.image && collection.image.url ? collection.image.url : (typeof collection.image === 'string' ? collection.image : null); %>
+      <% if (collImg) { %>
         <img 
-          src="<%= collection.image %>" 
+          src="<%= collImg %>" 
           alt="<%= collection.title %>" 
           class="absolute inset-0 w-full h-full object-cover opacity-50"
         >
@@ -149,12 +150,13 @@
           </div>
           
           <!-- Pagination -->
-          <% if (pagination && pagination.totalPages > 1) { %>
+          <% const pg = pagination || {}; const currentPage = pg.current || pg.currentPage || 1; const totalPages = pg.total || pg.totalPages || 1; %>
+          <% if (totalPages > 1) { %>
             <nav class="mt-12 flex justify-center">
               <ul class="flex items-center gap-1">
-                <% if (pagination.currentPage > 1) { %>
+                <% if (currentPage > 1) { %>
                   <li>
-                    <a href="?page=<%= pagination.currentPage - 1 %>" class="px-3 py-2 border rounded hover:bg-gray-50">
+                    <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>" class="px-3 py-2 border rounded hover:bg-gray-50">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                       </svg>
@@ -162,24 +164,24 @@
                   </li>
                 <% } %>
                 
-                <% for (let i = 1; i <= pagination.totalPages; i++) { %>
-                  <% if (i === 1 || i === pagination.totalPages || (i >= pagination.currentPage - 2 && i <= pagination.currentPage + 2)) { %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <% if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) { %>
                     <li>
                       <a 
-                        href="?page=<%= i %>" 
-                        class="px-3 py-2 border rounded <%= i === pagination.currentPage ? 'bg-emerald-600 text-white border-emerald-600' : 'hover:bg-gray-50' %>"
+                        href="?page=<%= i %>&sort=<%= sort %>" 
+                        class="px-3 py-2 border rounded <%= i === currentPage ? 'bg-emerald-600 text-white border-emerald-600' : 'hover:bg-gray-50' %>"
                       >
                         <%= i %>
                       </a>
                     </li>
-                  <% } else if (i === pagination.currentPage - 3 || i === pagination.currentPage + 3) { %>
+                  <% } else if (i === currentPage - 3 || i === currentPage + 3) { %>
                     <li class="px-2">...</li>
                   <% } %>
                 <% } %>
                 
-                <% if (pagination.currentPage < pagination.totalPages) { %>
+                <% if (currentPage < totalPages) { %>
                   <li>
-                    <a href="?page=<%= pagination.currentPage + 1 %>" class="px-3 py-2 border rounded hover:bg-gray-50">
+                    <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>" class="px-3 py-2 border rounded hover:bg-gray-50">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                       </svg>

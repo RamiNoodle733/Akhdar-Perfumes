@@ -1,0 +1,86 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-12">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-serif text-gray-900">My Account</h1>
+        <p class="mt-1 text-gray-600">Welcome back, <%= customer.firstName %>!</p>
+      </div>
+      <a href="/account/logout" class="text-sm text-gray-500 hover:text-gray-700">Sign Out</a>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <a href="/account/orders" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+        <svg class="w-8 h-8 text-emerald-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <h3 class="font-semibold text-gray-900">Order History</h3>
+        <p class="text-sm text-gray-600 mt-1">View and track your orders</p>
+      </a>
+      <a href="/account/addresses" class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+        <svg class="w-8 h-8 text-emerald-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <h3 class="font-semibold text-gray-900">Addresses</h3>
+        <p class="text-sm text-gray-600 mt-1">Manage your shipping addresses</p>
+      </a>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <svg class="w-8 h-8 text-emerald-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <h3 class="font-semibold text-gray-900">Profile</h3>
+        <p class="text-sm text-gray-600 mt-1"><%= customer.email %></p>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Update Profile</h2>
+      <form action="/account/profile" method="POST" class="space-y-4 max-w-lg">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <input type="text" id="firstName" name="firstName" value="<%= customer.firstName %>" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <div>
+            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <input type="text" id="lastName" name="lastName" value="<%= customer.lastName %>" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+        <div>
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <input type="tel" id="phone" name="phone" value="<%= customer.phone || '' %>" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-md transition-colors">
+          Save Changes
+        </button>
+      </form>
+    </div>
+    
+    <% if (recentOrders.length > 0) { %>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Recent Orders</h2>
+          <a href="/account/orders" class="text-sm text-emerald-600 hover:text-emerald-700">View All</a>
+        </div>
+        <div class="divide-y">
+          <% recentOrders.forEach(order => { %>
+            <a href="/account/orders/<%= order._id %>" class="block py-4 hover:bg-gray-50 -mx-2 px-2 rounded">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-medium text-gray-900">#<%= order.orderNumber %></p>
+                  <p class="text-sm text-gray-500"><%= new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></p>
+                </div>
+                <div class="text-right">
+                  <p class="font-medium text-gray-900">$<%= order.total.toFixed(2) %></p>
+                  <span class="text-xs capitalize <%= order.fulfillmentStatus === 'fulfilled' ? 'text-green-600' : 'text-yellow-600' %>">
+                    <%= order.fulfillmentStatus %>
+                  </span>
+                </div>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>

@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
+import expressLayouts from 'express-ejs-layouts';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
@@ -19,6 +20,8 @@ import checkoutRoutes from './src/routes/checkout.js';
 import adminRoutes from './src/routes/admin.js';
 import apiRoutes from './src/routes/api.js';
 import pageRoutes from './src/routes/pages.js';
+import customerRoutes from './src/routes/customer.js';
+import newsletterRoutes from './src/routes/newsletter.js';
 
 // Config
 dotenv.config();
@@ -30,18 +33,21 @@ const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/akhdar-perfumes')
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Stripe webhook needs raw body - must be before JSON parser
+app.post('/checkout/webhook', express.raw({ type: 'application/json' }), (await import('./src/routes/checkout.js')).webhookHandler);
 
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.tailwindcss.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.shopify.com", "https://js.stripe.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "https://cdn.tailwindcss.com"],
       frameSrc: ["'self'", "https://js.stripe.com"],
       connectSrc: ["'self'", "https://api.stripe.com"],
     },
@@ -79,15 +85,27 @@ app.use(session({
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Ensure uploads directory exists
+import { mkdirSync } from 'fs';
+try { mkdirSync(path.join(__dirname, 'uploads'), { recursive: true }); } catch(e) {}
+try { mkdirSync(path.join(__dirname, 'public/css'), { recursive: true }); } catch(e) {}
+try { mkdirSync(path.join(__dirname, 'public/js'), { recursive: true }); } catch(e) {}
+try { mkdirSync(path.join(__dirname, 'public/images'), { recursive: true }); } catch(e) {}
+
 // Global variables middleware
 app.use(async (req, res, next) => {
   // Cart data
-  res.locals.cart = req.session.cart || { items: [], total: 0, itemCount: 0 };
+  if (!req.session.cart) {
+    req.session.cart = { items: [], total: 0, subtotal: 0, itemCount: 0 };
+  }
+  res.locals.cart = req.session.cart;
   
   // Site settings
   res.locals.settings = {
@@ -102,10 +120,13 @@ app.use(async (req, res, next) => {
 
   // Current path for navigation
   res.locals.currentPath = req.path;
+
+  // Customer auth
+  res.locals.customer = req.session.customerId ? { id: req.session.customerId } : null;
   
   // Flash messages
-  res.locals.success = req.session.success;
-  res.locals.error = req.session.error;
+  res.locals.success = req.session.success || null;
+  res.locals.error = req.session.error || null;
   delete req.session.success;
   delete req.session.error;
   
@@ -121,11 +142,14 @@ app.use('/checkout', checkoutRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
 app.use('/pages', pageRoutes);
+app.use('/account', customerRoutes);
+app.use('/newsletter', newsletterRoutes);
 
 // 404 handler
 app.use((req, res) => {
   res.status(404).render('pages/404', {
-    title: 'Page Not Found - Akhdar Perfumes'
+    title: 'Page Not Found - Akhdar Perfumes',
+    layout: 'layouts/main'
   });
 });
 
@@ -134,7 +158,8 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render('pages/error', {
     title: 'Error - Akhdar Perfumes',
-    error: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message
+    error: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message,
+    layout: 'layouts/main'
   });
 });
 

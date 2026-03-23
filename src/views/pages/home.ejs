@@ -91,13 +91,16 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% collections.slice(0, 6).forEach(collection => { %>
         <a href="/collections/<%= collection.handle %>" class="group relative aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
-          <% if (collection.image) { %>
+          <% const collImg = collection.image && collection.image.url ? collection.image.url : (typeof collection.image === 'string' ? collection.image : null); %>
+          <% if (collImg) { %>
             <img 
-              src="<%= collection.image %>" 
+              src="<%= collImg %>" 
               alt="<%= collection.title %>" 
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               loading="lazy"
             >
+          <% } else { %>
+            <div class="w-full h-full bg-gradient-to-br from-emerald-600 to-emerald-900"></div>
           <% } %>
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
