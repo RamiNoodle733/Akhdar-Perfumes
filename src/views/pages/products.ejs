@@ -1,0 +1,112 @@
+<div class="bg-white">
+  <div class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+      <nav class="text-sm text-gray-500 mb-4">
+        <a href="/" class="hover:text-gray-900">Home</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900">All Products</span>
+      </nav>
+      <h1 class="text-3xl md:text-4xl font-serif text-gray-900">All Products</h1>
+      <p class="mt-2 text-gray-600">Browse our complete collection of premium fragrances</p>
+    </div>
+  </div>
+  
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between pb-6 border-b">
+      <p class="text-sm text-gray-600">
+        Showing <strong><%= products.length %></strong> of <strong><%= pagination.total * 12 %></strong> products
+      </p>
+      <div class="flex items-center gap-4">
+        <label class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600">Sort by:</span>
+          <select id="sort-select" onchange="applySort()" class="border-0 bg-transparent font-medium text-gray-900 focus:ring-0 cursor-pointer">
+            <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest</option>
+            <option value="price-asc" <%= sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+            <option value="price-desc" <%= sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+            <option value="title-asc" <%= sort === 'title-asc' ? 'selected' : '' %>>A-Z</option>
+            <option value="title-desc" <%= sort === 'title-desc' ? 'selected' : '' %>>Z-A</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    
+    <% if (products.length > 0) { %>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+        <% products.forEach(product => { %>
+          <%- include('../partials/product-card', { product, includeScript: false }) %>
+        <% }); %>
+      </div>
+      
+      <% if (pagination.total > 1) { %>
+        <nav class="mt-12 flex justify-center">
+          <ul class="flex items-center gap-1">
+            <% if (pagination.hasPrev) { %>
+              <li>
+                <a href="?page=<%= pagination.current - 1 %>&sort=<%= sort %>" class="px-3 py-2 border rounded hover:bg-gray-50">
+                  &laquo; Prev
+                </a>
+              </li>
+            <% } %>
+            <% for (let i = 1; i <= pagination.total; i++) { %>
+              <% if (i === 1 || i === pagination.total || (i >= pagination.current - 2 && i <= pagination.current + 2)) { %>
+                <li>
+                  <a href="?page=<%= i %>&sort=<%= sort %>" class="px-3 py-2 border rounded <%= i === pagination.current ? 'bg-emerald-600 text-white border-emerald-600' : 'hover:bg-gray-50' %>">
+                    <%= i %>
+                  </a>
+                </li>
+              <% } else if (i === pagination.current - 3 || i === pagination.current + 3) { %>
+                <li class="px-2">...</li>
+              <% } %>
+            <% } %>
+            <% if (pagination.hasNext) { %>
+              <li>
+                <a href="?page=<%= pagination.current + 1 %>&sort=<%= sort %>" class="px-3 py-2 border rounded hover:bg-gray-50">
+                  Next &raquo;
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </nav>
+      <% } %>
+    <% } else { %>
+      <div class="text-center py-16">
+        <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        <h2 class="mt-4 text-xl font-medium text-gray-900">No products found</h2>
+        <p class="mt-2 text-gray-600">Check back soon for new arrivals.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function applySort() {
+  const sort = document.getElementById('sort-select').value;
+  const url = new URL(window.location);
+  url.searchParams.set('sort', sort);
+  url.searchParams.set('page', '1');
+  window.location = url;
+}
+
+async function quickAddToCart(productId) {
+  try {
+    const response = await fetch('/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ productId, quantity: 1 })
+    });
+    const data = await response.json();
+    if (data.success) {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        cartCount.textContent = data.cart.itemCount;
+        cartCount.classList.remove('hidden');
+      }
+      openCartDrawer();
+    }
+  } catch (error) {
+    console.error('Failed to add to cart:', error);
+  }
+}
+</script>

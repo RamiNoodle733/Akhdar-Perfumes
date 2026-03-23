@@ -1,0 +1,96 @@
+<div class="bg-white min-h-screen">
+  <div class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-serif text-gray-900">
+        <% if (query) { %>
+          Search results for "<%= query %>"
+        <% } else { %>
+          Search
+        <% } %>
+      </h1>
+      <% if (query) { %>
+        <p class="mt-2 text-gray-600"><%= total %> result<%= total !== 1 ? 's' : '' %> found</p>
+      <% } %>
+    </div>
+  </div>
+  
+  <div class="container mx-auto px-4 py-8">
+    <form action="/search" method="GET" class="max-w-2xl mx-auto mb-12">
+      <div class="flex">
+        <input 
+          type="search" 
+          name="q" 
+          value="<%= query %>"
+          placeholder="Search for products..." 
+          class="flex-1 px-6 py-4 border-2 border-r-0 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-lg"
+          autofocus
+        >
+        <button type="submit" class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-r-lg transition-colors">
+          Search
+        </button>
+      </div>
+    </form>
+    
+    <% if (query && products.length > 0) { %>
+      <div class="flex items-center justify-between pb-6 border-b mb-8">
+        <p class="text-sm text-gray-600">Showing <strong><%= products.length %></strong> results</p>
+        <label class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600">Sort by:</span>
+          <select onchange="window.location.href='/search?q=<%= encodeURIComponent(query) %>&sort='+this.value" class="border-0 bg-transparent font-medium focus:ring-0 cursor-pointer">
+            <option value="relevance" <%= sort === 'relevance' ? 'selected' : '' %>>Relevance</option>
+            <option value="price-asc" <%= sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+            <option value="price-desc" <%= sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+            <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest</option>
+          </select>
+        </label>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <% products.forEach(product => { %>
+          <%- include('../partials/product-card', { product, includeScript: false }) %>
+        <% }); %>
+      </div>
+    <% } else if (query) { %>
+      <div class="text-center py-16">
+        <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <h2 class="mt-4 text-xl font-medium text-gray-900">No results found</h2>
+        <p class="mt-2 text-gray-600">Try different keywords or browse our collections.</p>
+        <a href="/collections" class="mt-4 inline-block text-emerald-600 hover:text-emerald-700 font-medium">
+          Browse Collections
+        </a>
+      </div>
+    <% } else { %>
+      <div class="text-center py-16">
+        <h2 class="text-xl font-medium text-gray-900">Start searching</h2>
+        <p class="mt-2 text-gray-600">Enter a search term to find products.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="/search?q=oud" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">Oud</a>
+          <a href="/search?q=rose" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">Rose</a>
+          <a href="/search?q=musk" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">Musk</a>
+          <a href="/search?q=amber" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">Amber</a>
+          <a href="/search?q=attar" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">Attar</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+async function quickAddToCart(productId) {
+  try {
+    const response = await fetch('/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ productId, quantity: 1 })
+    });
+    const data = await response.json();
+    if (data.success) {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) { cartCount.textContent = data.cart.itemCount; cartCount.classList.remove('hidden'); }
+      openCartDrawer();
+    }
+  } catch (error) { console.error('Failed to add to cart:', error); }
+}
+</script>

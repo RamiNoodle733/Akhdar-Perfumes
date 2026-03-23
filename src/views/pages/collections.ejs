@@ -1,0 +1,63 @@
+<div class="bg-white">
+  <div class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+      <nav class="text-sm text-gray-500 mb-4">
+        <a href="/" class="hover:text-gray-900">Home</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900">Collections</span>
+      </nav>
+      <h1 class="text-3xl md:text-4xl font-serif text-gray-900">Collections</h1>
+      <p class="mt-2 text-gray-600">Explore our curated collections of premium fragrances</p>
+    </div>
+  </div>
+  
+  <div class="container mx-auto px-4 py-12">
+    <% if (collections.length > 0) { %>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% collections.forEach(collection => { %>
+          <a href="/collections/<%= collection.handle %>" class="group relative aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
+            <% if (collection.image && collection.image.url) { %>
+              <img 
+                src="<%= collection.image.url %>" 
+                alt="<%= collection.title %>" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+              >
+            <% } else if (typeof collection.image === 'string' && collection.image) { %>
+              <img 
+                src="<%= collection.image %>" 
+                alt="<%= collection.title %>" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+              >
+            <% } else { %>
+              <div class="w-full h-full bg-gradient-to-br from-emerald-600 to-emerald-900"></div>
+            <% } %>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+              <h3 class="text-xl font-semibold mb-1"><%= collection.title %></h3>
+              <% if (collection.description) { %>
+                <p class="text-sm text-white/80 line-clamp-2"><%= collection.description %></p>
+              <% } %>
+              <p class="text-sm text-white/60 mt-2"><%= collection.productCount || 0 %> products</p>
+              <span class="inline-flex items-center mt-3 text-sm font-medium text-amber-300 group-hover:text-amber-200">
+                Shop Now
+                <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="text-center py-16">
+        <h2 class="text-xl font-medium text-gray-900">No collections yet</h2>
+        <p class="mt-2 text-gray-600">Check back soon!</p>
+        <a href="/products" class="mt-4 inline-block text-emerald-600 hover:text-emerald-700 font-medium">
+          Browse All Products
+        </a>
+      </div>
+    <% } %>
+  </div>
+</div>

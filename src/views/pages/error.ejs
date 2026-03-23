@@ -12,12 +12,9 @@
         We're sorry, but something unexpected happened. Please try again later.
       </p>
       
-      <% if (typeof error !== 'undefined' && error.message && process.env.NODE_ENV === 'development') { %>
+      <% if (typeof error !== 'undefined' && error) { %>
         <div class="mt-6 p-4 bg-gray-100 rounded-lg text-left">
-          <p class="text-sm font-mono text-red-600"><%= error.message %></p>
-          <% if (error.stack) { %>
-            <pre class="mt-2 text-xs text-gray-600 overflow-x-auto"><%= error.stack %></pre>
-          <% } %>
+          <p class="text-sm font-mono text-red-600"><%= typeof error === 'string' ? error : (error.message || 'Unknown error') %></p>
         </div>
       <% } %>
       

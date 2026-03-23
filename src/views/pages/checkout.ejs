@@ -1,6 +1,5 @@
 <div class="bg-gray-50 min-h-screen">
   <div class="container mx-auto px-4 py-12">
-    <!-- Breadcrumb -->
     <nav class="text-sm text-gray-500 mb-8">
       <a href="/" class="hover:text-gray-900">Home</a>
       <span class="mx-2">/</span>
@@ -12,22 +11,13 @@
     <h1 class="text-3xl font-serif text-gray-900 mb-8">Checkout</h1>
     
     <form id="checkout-form" class="grid lg:grid-cols-2 gap-8">
-      <!-- Customer Information -->
       <div class="space-y-8">
-        <!-- Contact Info -->
         <section class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-6">Contact Information</h2>
           <div class="space-y-4">
             <div>
               <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                required
-                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                placeholder="your@email.com"
-              >
+              <input type="email" id="email" name="email" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="your@email.com">
             </div>
             <label class="flex items-center gap-2">
               <input type="checkbox" name="subscribe" class="rounded text-emerald-600 focus:ring-emerald-500">
@@ -36,87 +26,41 @@
           </div>
         </section>
         
-        <!-- Shipping Address -->
         <section class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-6">Shipping Address</h2>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                <input 
-                  type="text" 
-                  id="firstName" 
-                  name="firstName" 
-                  required
-                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
+                <input type="text" id="firstName" name="firstName" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
               <div>
                 <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                <input 
-                  type="text" 
-                  id="lastName" 
-                  name="lastName" 
-                  required
-                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
+                <input type="text" id="lastName" name="lastName" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
             </div>
-            
             <div>
-              <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-              <input 
-                type="text" 
-                id="address" 
-                name="address" 
-                required
-                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                placeholder="Street address"
-              >
+              <label for="address1" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+              <input type="text" id="address1" name="address1" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Street address">
             </div>
-            
             <div>
-              <label for="apartment" class="block text-sm font-medium text-gray-700 mb-1">Apartment, suite, etc. (optional)</label>
-              <input 
-                type="text" 
-                id="apartment" 
-                name="apartment"
-                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              >
+              <label for="address2" class="block text-sm font-medium text-gray-700 mb-1">Apartment, suite, etc. (optional)</label>
+              <input type="text" id="address2" name="address2" class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
-            
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                <input 
-                  type="text" 
-                  id="city" 
-                  name="city" 
-                  required
-                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
+                <input type="text" id="city" name="city" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
               <div>
                 <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State / Province</label>
-                <input 
-                  type="text" 
-                  id="state" 
-                  name="state" 
-                  required
-                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
+                <input type="text" id="state" name="state" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
             </div>
-            
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                <select 
-                  id="country" 
-                  name="country" 
-                  required
-                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
+                <select id="country" name="country" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
                   <option value="US">United States</option>
                   <option value="CA">Canada</option>
                   <option value="GB">United Kingdom</option>
@@ -129,30 +73,16 @@
               </div>
               <div>
                 <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP / Postal Code</label>
-                <input 
-                  type="text" 
-                  id="zip" 
-                  name="zip" 
-                  required
-                  class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
+                <input type="text" id="zip" name="zip" required class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
             </div>
-            
             <div>
               <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input 
-                type="tel" 
-                id="phone" 
-                name="phone"
-                class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                placeholder="For delivery updates"
-              >
+              <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="For delivery updates">
             </div>
           </div>
         </section>
         
-        <!-- Shipping Method -->
         <section class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-6">Shipping Method</h2>
           <div class="space-y-3">
@@ -164,9 +94,8 @@
                   <p class="text-sm text-gray-500">5-7 business days</p>
                 </div>
               </div>
-              <span class="font-medium text-gray-900">$9.99</span>
+              <span class="font-medium text-gray-900" id="standard-price">$9.99</span>
             </label>
-            
             <label class="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
               <div class="flex items-center gap-3">
                 <input type="radio" name="shipping" value="express" class="text-emerald-600 focus:ring-emerald-500">
@@ -177,7 +106,6 @@
               </div>
               <span class="font-medium text-gray-900">$19.99</span>
             </label>
-            
             <label class="flex items-center justify-between p-4 border rounded-md cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
               <div class="flex items-center gap-3">
                 <input type="radio" name="shipping" value="overnight" class="text-emerald-600 focus:ring-emerald-500">
@@ -188,26 +116,31 @@
               </div>
               <span class="font-medium text-gray-900">$29.99</span>
             </label>
+            <% if (cart.subtotal >= freeShippingThreshold) { %>
+              <p class="text-sm text-emerald-600 font-medium mt-2">You qualify for free standard shipping!</p>
+            <% } else { %>
+              <p class="text-sm text-gray-500 mt-2">Free standard shipping on orders over $<%= freeShippingThreshold %></p>
+            <% } %>
           </div>
         </section>
         
-        <!-- Payment -->
         <section class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-6">Payment</h2>
           <p class="text-sm text-gray-600 mb-4">All transactions are secure and encrypted.</p>
-          
-          <!-- Stripe Elements will be mounted here -->
           <div id="card-element" class="p-4 border rounded-md"></div>
           <div id="card-errors" class="mt-2 text-sm text-red-600"></div>
         </section>
+
+        <section class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Order Notes (optional)</h2>
+          <textarea id="customerNote" name="customerNote" rows="3" class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Any special instructions..."></textarea>
+        </section>
       </div>
       
-      <!-- Order Summary -->
       <div class="lg:pl-8">
         <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
           <h2 class="text-lg font-semibold text-gray-900 mb-6">Order Summary</h2>
           
-          <!-- Cart Items -->
           <ul class="divide-y divide-gray-200 mb-6">
             <% cart.items.forEach(item => { %>
               <li class="py-4 flex items-center gap-4">
@@ -230,7 +163,6 @@
             <% }); %>
           </ul>
           
-          <!-- Totals -->
           <div class="space-y-3 text-sm border-t pt-6">
             <div class="flex justify-between">
               <span class="text-gray-600">Subtotal</span>
@@ -238,24 +170,22 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">Shipping</span>
-              <span class="text-gray-900" id="shipping-cost">$9.99</span>
+              <span class="text-gray-900" id="shipping-cost">
+                <%= cart.subtotal >= freeShippingThreshold ? 'FREE' : '$9.99' %>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">Tax</span>
-              <span class="text-gray-900" id="tax-amount">$<%= (cart.subtotal * 0.0825).toFixed(2) %></span>
+              <span class="text-gray-900" id="tax-amount">$<%= (cart.subtotal * taxRate).toFixed(2) %></span>
             </div>
             <div class="flex justify-between pt-3 border-t text-base font-semibold">
               <span>Total</span>
-              <span id="order-total">$<%= (cart.subtotal + 9.99 + cart.subtotal * 0.0825).toFixed(2) %></span>
+              <% const initShipping = cart.subtotal >= freeShippingThreshold ? 0 : 9.99; %>
+              <span id="order-total">$<%= (cart.subtotal + initShipping + cart.subtotal * taxRate).toFixed(2) %></span>
             </div>
           </div>
           
-          <!-- Submit Button -->
-          <button 
-            type="submit"
-            id="submit-btn"
-            class="mt-6 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-md transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button type="submit" id="submit-btn" class="mt-6 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-md transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
             <span id="btn-text">Complete Order</span>
             <svg id="btn-spinner" class="hidden w-5 h-5 ml-2 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -263,7 +193,6 @@
             </svg>
           </button>
           
-          <!-- Secure Checkout -->
           <p class="mt-4 text-center text-xs text-gray-500">
             <svg class="inline w-4 h-4 mr-1 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -276,42 +205,32 @@
   </div>
 </div>
 
-<!-- Stripe.js -->
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-// Initialize Stripe
-const stripe = Stripe('<%= process.env.STRIPE_PUBLISHABLE_KEY %>');
+const stripe = Stripe('<%= stripePublicKey %>');
 const elements = stripe.elements();
+const subtotal = <%= cart.subtotal %>;
+const freeThreshold = <%= freeShippingThreshold %>;
+const taxRate = <%= taxRate %>;
 
-// Create card element
 const cardElement = elements.create('card', {
   style: {
     base: {
       fontSize: '16px',
       color: '#1f2937',
-      '::placeholder': {
-        color: '#9ca3af'
-      }
+      '::placeholder': { color: '#9ca3af' }
     },
-    invalid: {
-      color: '#dc2626'
-    }
+    invalid: { color: '#dc2626' }
   }
 });
 
 cardElement.mount('#card-element');
 
-// Handle card errors
 cardElement.on('change', (event) => {
   const displayError = document.getElementById('card-errors');
-  if (event.error) {
-    displayError.textContent = event.error.message;
-  } else {
-    displayError.textContent = '';
-  }
+  displayError.textContent = event.error ? event.error.message : '';
 });
 
-// Update shipping cost on selection change
 document.querySelectorAll('input[name="shipping"]').forEach(radio => {
   radio.addEventListener('change', updateTotals);
 });
@@ -319,17 +238,18 @@ document.querySelectorAll('input[name="shipping"]').forEach(radio => {
 function updateTotals() {
   const shipping = document.querySelector('input[name="shipping"]:checked').value;
   const shippingCosts = { standard: 9.99, express: 19.99, overnight: 29.99 };
-  const subtotal = <%= cart.subtotal %>;
-  const shippingCost = shippingCosts[shipping];
-  const tax = subtotal * 0.0825;
+  let shippingCost = shippingCosts[shipping];
+  if (subtotal >= freeThreshold && shipping === 'standard') {
+    shippingCost = 0;
+  }
+  const tax = Math.round(subtotal * taxRate * 100) / 100;
   const total = subtotal + shippingCost + tax;
   
-  document.getElementById('shipping-cost').textContent = `$${shippingCost.toFixed(2)}`;
+  document.getElementById('shipping-cost').textContent = shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`;
   document.getElementById('tax-amount').textContent = `$${tax.toFixed(2)}`;
   document.getElementById('order-total').textContent = `$${total.toFixed(2)}`;
 }
 
-// Handle form submission
 document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   
@@ -342,12 +262,10 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   btnSpinner.classList.remove('hidden');
   
   const formData = new FormData(e.target);
-  const shippingCosts = { standard: 9.99, express: 19.99, overnight: 29.99 };
   const shipping = formData.get('shipping');
   
   try {
-    // Create payment intent
-    const response = await fetch('/checkout/create-payment-intent', {
+    const piResponse = await fetch('/checkout/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -355,23 +273,22 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
         shippingAddress: {
           firstName: formData.get('firstName'),
           lastName: formData.get('lastName'),
-          address: formData.get('address'),
-          apartment: formData.get('apartment'),
+          address1: formData.get('address1'),
+          address2: formData.get('address2'),
           city: formData.get('city'),
           state: formData.get('state'),
           country: formData.get('country'),
           zip: formData.get('zip'),
           phone: formData.get('phone')
         },
-        shippingMethod: shipping,
-        shippingCost: shippingCosts[shipping]
+        shippingMethod: shipping
       })
     });
     
-    const { clientSecret, orderId } = await response.json();
+    const piData = await piResponse.json();
+    if (piData.error) throw new Error(piData.error);
     
-    // Confirm card payment
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+    const { error, paymentIntent } = await stripe.confirmCardPayment(piData.clientSecret, {
       payment_method: {
         card: cardElement,
         billing_details: {
@@ -379,8 +296,8 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
           email: formData.get('email'),
           phone: formData.get('phone'),
           address: {
-            line1: formData.get('address'),
-            line2: formData.get('apartment'),
+            line1: formData.get('address1'),
+            line2: formData.get('address2'),
             city: formData.get('city'),
             state: formData.get('state'),
             postal_code: formData.get('zip'),
@@ -395,12 +312,40 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
       submitBtn.disabled = false;
       btnText.textContent = 'Complete Order';
       btnSpinner.classList.add('hidden');
-    } else if (paymentIntent.status === 'succeeded') {
-      window.location.href = `/checkout/success?order=${orderId}`;
+      return;
+    }
+    
+    if (paymentIntent.status === 'succeeded') {
+      const orderResponse = await fetch('/checkout/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.get('email'),
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          address1: formData.get('address1'),
+          address2: formData.get('address2'),
+          city: formData.get('city'),
+          state: formData.get('state'),
+          zip: formData.get('zip'),
+          country: formData.get('country'),
+          phone: formData.get('phone'),
+          paymentIntentId: paymentIntent.id,
+          shippingMethod: shipping,
+          customerNote: formData.get('customerNote')
+        })
+      });
+      
+      const orderData = await orderResponse.json();
+      if (orderData.success) {
+        window.location.href = `/checkout/confirmation?order=${orderData.orderId}`;
+      } else {
+        throw new Error(orderData.error || 'Failed to create order');
+      }
     }
   } catch (err) {
     console.error('Checkout error:', err);
-    document.getElementById('card-errors').textContent = 'An error occurred. Please try again.';
+    document.getElementById('card-errors').textContent = err.message || 'An error occurred. Please try again.';
     submitBtn.disabled = false;
     btnText.textContent = 'Complete Order';
     btnSpinner.classList.add('hidden');

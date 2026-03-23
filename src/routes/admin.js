@@ -103,30 +103,48 @@ router.get('/', requireAdmin, async (req, res) => {
     const [
       totalProducts,
       totalOrders,
+      pendingOrders,
       recentOrders,
-      totalRevenue
+      totalRevenueResult,
+      totalCustomers,
+      lowStockProducts
     ] = await Promise.all([
       Product.countDocuments(),
       Order.countDocuments(),
+      Order.countDocuments({ fulfillmentStatus: 'unfulfilled' }),
       Order.find().sort({ createdAt: -1 }).limit(5),
       Order.aggregate([
         { $match: { paymentStatus: 'paid' } },
         { $group: { _id: null, total: { $sum: '$total' } } }
-      ])
+      ]),
+      (await import('../models/Customer.js')).default.countDocuments(),
+      Product.find({ 'inventory.quantity': { $lte: 10 }, 'inventory.trackInventory': true }).limit(5)
     ]);
 
     res.render('admin/dashboard', {
       title: 'Dashboard - Admin',
-      totalProducts,
-      totalOrders,
+      layout: 'admin/layout',
+      currentPage: 'dashboard',
+      stats: {
+        totalRevenue: totalRevenueResult[0]?.total || 0,
+        totalOrders,
+        pendingOrders,
+        totalProducts,
+        lowStockProducts: lowStockProducts.length,
+        totalCustomers
+      },
       recentOrders,
-      totalRevenue: totalRevenue[0]?.total || 0
+      lowStockProducts
     });
   } catch (error) {
     console.error('Dashboard error:', error);
     res.render('admin/dashboard', {
       title: 'Dashboard - Admin',
-      error: 'Failed to load dashboard data'
+      layout: 'admin/layout',
+      currentPage: 'dashboard',
+      stats: { totalRevenue: 0, totalOrders: 0, pendingOrders: 0, totalProducts: 0, lowStockProducts: 0, totalCustomers: 0 },
+      recentOrders: [],
+      lowStockProducts: []
     });
   }
 });
@@ -139,10 +157,14 @@ router.get('/products', requireAdmin, async (req, res) => {
     const products = await Product.find()
       .sort({ createdAt: -1 })
       .populate('collections');
+    const collections = await Collection.find();
     
     res.render('admin/products/index', {
       title: 'Products - Admin',
-      products
+      layout: 'admin/layout',
+      currentPage: 'products',
+      products,
+      collections
     });
   } catch (error) {
     console.error('Products list error:', error);
@@ -156,6 +178,8 @@ router.get('/products/new', requireAdmin, async (req, res) => {
   const collections = await Collection.find();
   res.render('admin/products/form', {
     title: 'New Product - Admin',
+    layout: 'admin/layout',
+    currentPage: 'products',
     product: null,
     collections
   });
@@ -214,6 +238,8 @@ router.get('/products/:id/edit', requireAdmin, async (req, res) => {
 
     res.render('admin/products/form', {
       title: 'Edit Product - Admin',
+      layout: 'admin/layout',
+      currentPage: 'products',
       product,
       collections
     });
@@ -300,6 +326,8 @@ router.get('/collections', requireAdmin, async (req, res) => {
     const collections = await Collection.find().sort({ createdAt: -1 });
     res.render('admin/collections/index', {
       title: 'Collections - Admin',
+      layout: 'admin/layout',
+      currentPage: 'collections',
       collections
     });
   } catch (error) {
@@ -311,6 +339,8 @@ router.get('/collections', requireAdmin, async (req, res) => {
 router.get('/collections/new', requireAdmin, (req, res) => {
   res.render('admin/collections/form', {
     title: 'New Collection - Admin',
+    layout: 'admin/layout',
+    currentPage: 'collections',
     collection: null
   });
 });
@@ -350,6 +380,8 @@ router.get('/collections/:id/edit', requireAdmin, async (req, res) => {
     }
     res.render('admin/collections/form', {
       title: 'Edit Collection - Admin',
+      layout: 'admin/layout',
+      currentPage: 'collections',
       collection
     });
   } catch (error) {
@@ -406,6 +438,8 @@ router.get('/orders', requireAdmin, async (req, res) => {
     const orders = await Order.find().sort({ createdAt: -1 });
     res.render('admin/orders/index', {
       title: 'Orders - Admin',
+      layout: 'admin/layout',
+      currentPage: 'orders',
       orders
     });
   } catch (error) {
@@ -423,6 +457,8 @@ router.get('/orders/:id', requireAdmin, async (req, res) => {
     }
     res.render('admin/orders/detail', {
       title: `Order ${order.orderNumber} - Admin`,
+      layout: 'admin/layout',
+      currentPage: 'orders',
       order
     });
   } catch (error) {
