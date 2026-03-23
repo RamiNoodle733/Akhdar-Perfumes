@@ -49,8 +49,11 @@
           <td class="px-6 py-4">
             <div class="flex items-center gap-4">
               <div class="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
-                <% if (product.images && product.images[0]) { %>
-                  <img src="<%= product.images[0] %>" alt="<%= product.title %>" class="w-full h-full object-cover">
+                <% 
+                  const pImg = product.images && product.images[0] ? (product.images[0].url || product.images[0]) : null;
+                %>
+                <% if (pImg) { %>
+                  <img src="<%= pImg %>" alt="<%= product.title %>" class="w-full h-full object-cover">
                 <% } %>
               </div>
               <div>
@@ -65,8 +68,9 @@
             </span>
           </td>
           <td class="px-6 py-4">
-            <span class="<%= product.inventory <= 10 ? 'text-red-600' : 'text-gray-900' %>">
-              <%= product.inventory %> in stock
+            <% const invQty = product.inventory ? product.inventory.quantity : 0; %>
+            <span class="<%= invQty <= 10 ? 'text-red-600' : 'text-gray-900' %>">
+              <%= invQty %> in stock
             </span>
           </td>
           <td class="px-6 py-4 font-medium text-gray-900">

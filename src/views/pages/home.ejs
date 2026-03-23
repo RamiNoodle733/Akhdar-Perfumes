@@ -39,11 +39,11 @@
       
       <!-- 3D Bottle Viewer -->
       <div class="relative h-[400px] lg:h-[500px]">
-        <% if (featuredProduct && featuredProduct.glbUrl) { %>
+        <% if (typeof featuredProduct !== 'undefined' && featuredProduct && featuredProduct.model3d && featuredProduct.model3d.glbUrl) { %>
           <model-viewer
-            src="<%= featuredProduct.glbUrl %>"
-            ios-src="<%= featuredProduct.usdzUrl || '' %>"
-            poster="<%= featuredProduct.posterImage || featuredProduct.images[0] %>"
+            src="<%= featuredProduct.model3d.glbUrl %>"
+            ios-src="<%= featuredProduct.model3d.usdzUrl || '' %>"
+            poster="<%= featuredProduct.model3d.posterImage || '' %>"
             alt="<%= featuredProduct.title %>"
             auto-rotate
             camera-controls
