@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
   res.render('pages/checkout', {
     title: 'Checkout - Akhdar Perfumes',
     cart,
-    stripePublicKey: process.env.STRIPE_PUBLIC_KEY || 'pk_test_placeholder',
+    stripePublicKey: process.env.STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLIC_KEY || 'pk_test_placeholder',
     shippingRates: SHIPPING_RATES,
     taxRate: TAX_RATE,
     freeShippingThreshold: FREE_SHIPPING_THRESHOLD
