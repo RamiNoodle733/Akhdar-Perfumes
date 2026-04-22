@@ -61,6 +61,11 @@ STRIPE_PUBLISHABLE_KEY=pk_test_...
 npm run seed
 ```
 
+Optional: import products from a Shopify CSV export:
+```bash
+npm run import:shopify-products -- data/shopify-products.csv
+```
+
 6. Build CSS (for production):
 ```bash
 npm run build:css
@@ -84,7 +89,14 @@ After seeding, you can access the admin panel at `/admin` with:
 - `npm start` - Start production server
 - `npm run dev` - Start development server with auto-reload
 - `npm run seed` - Seed database with sample data
+- `npm run import:shopify-products -- <file.csv>` - Import/update products from Shopify export CSV
 - `npm run build:css` - Build Tailwind CSS for production
+
+## Shopify Migration Runbook
+
+For full cutover steps (env setup, data import, Stripe webhook setup, deployment, and DNS cutover), see:
+
+- `docs/MIGRATION_RUNBOOK.md`
 
 ## Project Structure
 
