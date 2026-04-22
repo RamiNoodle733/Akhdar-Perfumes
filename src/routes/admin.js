@@ -63,7 +63,7 @@ router.get('/login', (req, res) => {
   }
   res.render('admin/login', {
     title: 'Admin Login - Akhdar Perfumes',
-    layout: 'admin/layout-minimal'
+    layout: false
   });
 });
 
